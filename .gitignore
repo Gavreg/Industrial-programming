@@ -1,28 +1,11 @@
-!*.image.pdf
+# Игнорировать всё
+*
 
-*.log
-*.aux
-*.gz
-*.nav
-*.out
-*.snm
-*.toc
-*.fls
-*synctex*
-*.xdv
+# Но не игнорировать эти файлы и папки
+!images/
+!images/**
+!*.tex
+!*.pdf
+!*.txt
 
-*.gnuplot
-*.table
-*.dat
-
-
-
-.vscode/
-
-*.ilk
-*.exe
-*.pdb
-*.obj
-
-*.gvr
-_minted/*
+!.gitignore
