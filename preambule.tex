@@ -1,0 +1,336 @@
+
+
+%Для XeLatex/+
+%\usepackage{polyglossia}
+%\setdefaultlanguage{russian}
+%\setotherlanguage{english}
+%%\setkeys{russian}{babelshorthands=true} 
+
+\usepackage[russian]{babel}
+
+
+
+\usepackage{fontspec}
+
+\setmainfont{Times New Roman} 
+\setsansfont{Arial} 
+\setmonofont{Consolas}  
+
+
+
+\mode<article>{
+	
+	\usepackage{hyperref}
+	
+}
+\mode<presentation>{
+	
+	%\usetheme{Antibes}
+	\usetheme{Berlin}
+	
+	\usefonttheme{professionalfonts} 
+	\usefonttheme{serif} % default family is serif
+	
+	\usepackage{fontspec}
+	\setmonofont{Cascadia Code SemiLight} %CMU Typewriter Text
+	\setromanfont{DejaVu Serif}
+	\setsansfont{DejaVu Sans}
+	%\usecolortheme{spruce} %зеленая, плохой цвет в заголовках 
+	%\usecolortheme{albatross} %синяя, пхоло виден черный цвет
+	
+	\setbeamercovered{dynamic}
+	
+}
+
+\newlength{\parskipbackup}
+\setlength{\parskipbackup}{\parskip}
+\newlength{\parindentbackup}
+\setlength{\parindentbackup}{\parindent}
+
+\let\notebackup\note
+\renewcommand{\note}[1]{\notebackup{%
+		\setlength{\parindent}{3ex}%
+		\setlength{\parskip}{0.5ex}%
+		{\small{}#1}%
+		\setlength{\parskip}{\parskipbackup}%
+		\setlength{\parindent}{\parindentbackup}%
+	}%
+}
+
+\mode<presentation>%
+{
+	
+	%\setbeameroption{second mode text on second screen=right}
+	%\setbeameroption{show notes on second screen}
+	%\setbeameroption{show notes}
+	\setbeamertemplate{note page}{
+		
+		%\vspace{1em}\insertframetitle
+		
+		%		\begin{wrapfigure}[12]{l}[0cm]{0.5\textwidth}
+			%			\fbox{ \resizebox{0.45\textwidth}{!}{\insertslideintonotes{1}} }
+			%		\end{wrapfigure}		
+		\insertnote}
+	
+	
+}
+
+
+\newcommand{\MP}[1]{\mode<presentation>{#1} }
+\newcommand{\MA}[1]{\mode<article>{#1} }
+
+\newcommand{\ABS}[1]{\left| #1 \right|}
+%\newcommand{\ABS}[1]{\mid #1 \mid}
+
+\newcommand{\HREF}[2]{{\color{blue}\underline{\href{#1}{#2}}}}
+
+\setbeamertemplate{caption}[numbered]
+
+
+\usepackage{array}
+\usepackage{tabularx}
+
+\usepackage{verbatim}
+
+\usepackage{ifthen}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{matrix}
+
+\newcommand{\rememb}[1]{\parbox{0pt}{}\tikz[remember picture,baseline=-0.5ex]{\draw node[inner sep=0pt, outer sep=0pt] (#1){\strut};}}
+
+
+
+\usepackage{tikz-3dplot}
+\usepackage{environ}
+\usepackage{animate}
+
+
+
+
+
+\usepackage{xcolor}
+
+
+\usepackage{amsmath} %математические формулы
+%\usepackage{amsfonts} %математические шрифты
+
+
+\usepackage[e]{esvect}  %Красивая стрелочка вектора
+%\let\oldvv\vv
+\newcommand{\VV}[1]{\vv{#1\mathstrut}}
+
+\usepackage{graphicx} %работа с каритнками
+
+
+
+
+\usepackage{array}
+\usepackage{multirow}
+
+
+
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{dot}{~---~}            %Разделитель номер рисунка
+%\captionsetup[figure]{justification=centering,labelsep=dot, format=plain}                        %Подпись рис. центр
+%\captionsetup[table]{justification=raggedleft,labelsep=dot, format=plain, singlelinecheck=false} %Подпись табл. слева
+\captionsetup[lstlisting]{justification=raggedleft,labelsep=dot, format=plain, font=normal, singlelinecheck=false}                     %Подпись рис. центр
+
+\usepackage{indentfirst} %отступ первой строки
+
+
+\usepackage[svgnames]{xcolor}
+
+
+\usepackage{hyperref}
+
+
+
+\def\sectionname{Раздел}
+\def\subsectionname{Подраздел}
+
+
+\NewDocumentCommand\TC{m+m+m}{%	
+	\begin{columns}
+		\begin{column}{#1\textwidth}
+			#2
+		\end{column}
+		\begin{column}{\fpeval{1-#1}\textwidth}
+			#3
+		\end{column}
+	\end{columns}
+}
+
+\NewDocumentCommand\TCT{m+m+m}{%	
+	\begin{columns}[T]
+		\begin{column}{#1\textwidth}
+			#2
+		\end{column}
+		\begin{column}{\fpeval{1-#1}\textwidth}
+			#3
+		\end{column}
+	\end{columns}
+}
+
+
+\usepackage{newfile}
+
+\edef\LectionNumber{0}
+\edef\LectionTheme{0}
+
+\let\oldsection\section
+\let\oldsubsection\subsection
+
+
+\AtBeginDocument
+{
+	\newoutputstream{CONTENT}
+	\openoutputfile{\jobname.gvr}{CONTENT}
+	
+	%\expandafter\addtostream{CONTENT}{\noindent\textbf{\Large Лекция \LectionNumber~---~\LectionTheme}\unexpanded{\setcounter{SEC}{0}}\par}
+	\addtostream{CONTENT}{\protect\noindent%
+						  	\protect\setcounter{SEC}{0}%
+							{%
+							\protect\large% 
+							\protect\bfseries{}%
+							Лекция \LectionNumber~---~\LectionTheme% 
+							}% 
+							\protect\par}
+}
+
+\renewcommand{\section}[2][]{
+	\ifstrempty{#1}%
+	{\oldsection{#2}}%
+	{\oldsection[#1]{#2}}	
+	\addtostream{CONTENT}{%
+			\protect\noindent%
+			\protect\stepcounter{SEC}%
+			\protect\setcounter{SUB}{0}%
+			\protect\hspace{3ex}%
+			\protect\theSEC ~ #1 \protect\par%
+			}
+}
+
+\renewcommand{\subsection}[1]{
+	\oldsubsection{#1}
+	\addtostream{CONTENT}{%
+			\protect\noindent%
+			\protect\stepcounter{SUB}%
+			\protect\hspace{6ex}%
+			\protect\theSEC{}.\protect\theSUB ~ #1 \protect\par%
+			}
+}
+
+
+\newcommand{\Strut}{{\Large\strut}}
+
+\newcommand\scb[1]{\left( #1 \right)}
+
+\newcommand{\LINK}[2]{%
+	\qrcode[height=1cm]{#1}\  \HREF{#1}{\parbox{0.8\textwidth}{#2}} \\[0.5em]
+}
+
+\NewDocumentCommand{\lecdni}{}{\LectionNumber}
+\author{Гаврилов Андрей Геннадьевич}
+\newcommand{\regals}{кандидат технических наук, доцент}
+\institute{Кафедра Информационных технологий и вычислительных систем \\МГТУ~<<СТАНКИН>>}
+\lecture{История компьютерной графики}{kghistory}\subtitle{Компьютерная графика}
+
+
+\makeatletter
+\newcommand*{\overlaynumber}{\number\beamer@slideinframe}
+\makeatother
+
+
+
+
+
+\usepackage{cprotect}
+
+\usepackage{qrcode}
+
+\newcommand{\QRFRAME}{%
+    \begin{frame}[plain, noframenumbering]    	
+	
+	\centering
+	Трансляция презентации (во время очных лекций)    
+	
+	~
+	
+	{\Large \ttfamily  https://clck.ru/3D3Efj  }
+	
+	~
+	
+	\tikz\node[inner sep=0pt,rounded corners=5mm, clip]{\qrcode[height=0.4\textwidth]{https://clck.ru/3D3Efj}}; 
+	
+	~	
+	{\small
+	При просмотре презентации в PDF для отображения анимаций на слайдах необходимо использовать Acrobat Reader, KDE Okular, PDF-XChange, Foxit Reader, браузер Firefox. Для браузеров на движке Chrome (Edge, Яндекс, Opera,~\dots) необходимо использовать \HREF{https://chromewebstore.google.com/detail/pdf-viewer/oemmndcbldboiebfnladdacbdfmadadm?hl=ru&utm_source=ext_sidebar}{PDF.js} c опцией <<Enable active content (JavaScript) in PDFs>>. }
+	
+	\end{frame}%
+}
+
+\newcommand{\IG}[2][1]{\includegraphics[width=#1\textwidth]{#2}}
+
+
+%===========Настройка листингов==================
+
+\usepackage{fancyvrb}
+\usepackage{minted}
+
+\AtBeginEnvironment{minted}{%
+	\renewcommand{\fcolorbox}[4][]{#4}}
+
+\mode<presentation>
+{
+	\newminted[cppcode]{c++}{linenos, autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+	
+	\newminted[cppresumecode]{c++}{linenos, firstnumber=last,  autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+	
+	\newminted[cmakecode]{cmake}{linenos, autogobble=true, style=default,tabsize=2,fontsize=\footnotesize,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+	
+	\newminted[cmdcode]{Batch}{linenos, autogobble=true, bgcolor=red,  style=lightbulb,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+}
+
+\mode<!presentation>
+{
+	\newminted[cppcode]{c++}{linenos,  frame=lines, style=vs,tabsize=3,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
+	\newminted[cppresumecode]{c++}{linenos, firstnumber=last, frame=lines, style=vs,tabsize=3,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
+	
+	\newminted[cmakecode]{cmake}{linenos, autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
+	
+	\newminted[cmdcode]{batch}{linenos, autogobble=true, style=lightbulb,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+}
+
+\newenvironment{codeblock}[2][]
+{
+	\VerbatimEnvironment
+	\begin{block}{#1\hfill{}#2}
+		\begin{cppcode}% 
+}
+{		
+	\end{cppcode}
+	\end{block}
+}
+
+\newenvironment{codeblockresume}[2][]
+{
+	\VerbatimEnvironment
+	\begin{block}{#1\hfill{}#2}
+		\begin{cppresumecode}% 
+}
+{		
+		\end{cppresumecode}
+		\end{block}
+}
+
+
+%===================================================
+
+

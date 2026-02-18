@@ -1,0 +1,961 @@
+\documentclass[10pt, aspectratio=1610]{beamer}
+%\documentclass{article}
+%\usepackage{beamerarticle}
+\mode<article>
+{
+	\usepackage[a4paper]{geometry}
+}
+
+
+
+\edef\tlCourse{Промышленное программирование2}
+\edef\tlPartName{Модуль 1. Разработка модульных программ}
+\edef\tlPartNumber{2}
+\edef\tlThemeName{Системы сборки проектов на языке С/С++}
+\edef\tlThemeNumberLocal{2}
+\edef\tlThemeNumberGlobal{3}
+
+
+%\documentclass[10pt, handout]{beamer}
+%\setbeameroption{show notes}
+
+%\documentclass[10pt, a4paper]{article}
+%\usepackage{beamerarticle}
+
+\input{preambule.tex}
+
+\graphicspath{{Images/}{Images/\jobname/}}
+
+\date{\today}
+
+\renewcommand{\LectionNumber}{\tlThemeNumberGlobal}
+\renewcommand{\LectionTheme}{Тема \tlThemeNumberGlobal \\ \tlThemeName}
+\title{\LectionTheme}
+\subtitle{\tlCourse}
+
+
+\usepackage{fancyvrb}
+\usepackage{minted}
+
+
+\usetikzlibrary {shapes.geometric}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{trees}
+
+\tikzset{	bblock/.style 	= {draw, minimum width=8em, minimum height=2em, text height=1.5ex,text depth=0.25ex},
+	io/.style 		= {bblock, trapezium, trapezium left angle=70, trapezium right angle=110},
+	op/.style 		= {bblock, rectangle}, 
+	if/.style		= {bblock, diamond},
+	terminator/.style		= {bblock, rounded rectangle},
+	portal/.style 	={bblock,circle,minimum size=3em},
+}
+
+% Source - https://tex.stackexchange.com/a/23094
+% Posted by egreg
+% Retrieved 2026-02-16, License - CC BY-SA 3.0
+
+\newcommand*{\fvtextcolor}[2]{\textcolor{#1}{#2}}
+\newcommand*{\tc}[2]{\textcolor{#1}{#2}}
+
+
+\begin{document}
+	 
+	\mode<presentation>
+	{
+		\input{template.tex}	
+	}
+	
+	
+
+
+	
+\QRFRAME
+	
+
+	
+\mode<presentation>
+{	
+	
+			
+	    
+		
+		\frame{\maketitle}
+		
+		\begin{frame}\frametitle{План лекции}			
+			\tableofcontents
+		\end{frame}
+
+	
+}
+
+
+
+\mode<article>
+{
+	\begin{center}
+		
+		\Large
+		
+		\title
+		
+		\LectionTheme
+	\end{center}
+}
+	
+\section{Системы сборки программ}
+	
+	
+	
+\begin{frame}[fragile]\frametitle{Система сборки}
+
+
+
+	\begin{block}{Система сборки --- }
+		это программный инструмент или набор инструментов, который автоматизирует процесс преобразования исходного кода (а также связанных ресурсов, зависимостей и других файлов) в исполняемые программы или библиотеки.
+	\end{block} \pause
+	
+	Сборка (build) программ для С++ --- это процесс, обычно включает в себя следующие ключевые этапы, управляемые системой сборки:
+	
+	\begin{itemize}
+		\item \textbf{Препроцессинг}: обработка директив {\verb|#include|}, макросов (\verb|#define|) и условной компиляции (\verb|#if|, \verb|ifdef|, и т.д.).
+		\pause\item \textbf{Компиляция}: перевод исходного кода (.cpp, .cxx файлов) в объектные файлы (.o, .obj), содержащие машинный код.
+		\pause\item \textbf{Компоновка} (линковка): объединение всех объектных файлов и статических/динамических библиотек в единый исполняемый файл (.exe) или библиотеку(.dll, .lib, .a, .so).
+	\end{itemize}
+	
+\end{frame}
+	
+
+\section{Cmake}
+
+\begin{frame}\frametitle{Способы работы с Cmake}
+	
+	
+	\TCT{0.5}	
+	{
+		\centering
+		
+		\textbf{GUI}
+		
+		\IG[1]{cmake_gui.jpg}
+	}
+	{
+		\centering
+		
+		\textbf{CLI}
+		
+		\IG[1]{cmake_cli.jpg}
+	}
+	
+	
+
+	
+\end{frame}
+
+
+\begin{frame}[fragile, t]\frametitle{Соберём первую программу}
+	
+	\begin{onlyenv}<+>
+		
+	\textbf{1. Необходимые файлы }
+		
+	\vspace{1cm}	
+
+	\begin{columns}[t]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			Файл с исходным кодом программы:
+			\begin{block}{\ttfamily main.c}
+			\begin{cppcode}
+				#include <stdio.h>
+								
+				int main()
+				{
+					printf("Hello from CMake!");				
+					return 0;
+				}
+			\end{cppcode}
+			\end{block}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			Файл с настройкой проекта:
+			\begin{block}{\ttfamily CMakeLists.txt}
+			\begin{cmakecode}
+				cmake_minimum_required(VERSION 4.1)
+				project(First_project)
+				add_executable(pr main.c)
+			\end{cmakecode}
+			\end{block}
+		\end{column}
+	\end{columns}
+
+	\end{onlyenv}
+	\begin{onlyenv}<+>
+		\textbf{2. Работаем с Cmake}
+		
+
+		
+		
+		\begin{columns}[onlytextwidth]
+			\edef\colA{0.5}
+			\begin{column}{\colA\linewidth}
+				%Колнка1
+				\begin{tikzpicture}[remember picture]
+					\node[anchor=south west](a){\IG[0.95]{cmake1}};
+%					\draw[thick] (a.south west) grid (a.north east);
+%					\draw[thin, opacity=0.5, step=0.5] (a.south west) grid (a.north east);
+					
+					\draw [red, thick] (1.6,5.25) -- (4, 5.25) node[below, midway] {\scriptsize диретория с \ttfamily CMakeLists.txt};
+					
+					\coordinate (P1) at (0.75,2.6);
+					\coordinate (P4) at (2.5,2.3);
+					
+					
+				\end{tikzpicture}
+			\end{column}
+			\begin{column}{\fpeval{1-\colA}\linewidth}
+				%Колнка2
+				\begin{tikzpicture}[remember picture]
+					\node[anchor=south west](a){\IG[0.95]{cmake2}};
+%					\draw[thick] (a.south west) grid (a.north east);
+%					\draw[thin, opacity=0.5, step=0.5] (a.south west) grid (a.north east);
+					
+					\coordinate (P2) at (0.4,3.55);
+					\coordinate (P3) at (4.5,0.4);
+				\end{tikzpicture}
+			\end{column}
+			\begin{tikzpicture}[remember picture,overlay]
+				\draw[red, -> , very thick] (P1) ..controls ++(30:2.5).. (P2);
+			\end{tikzpicture}
+			\begin{tikzpicture}[remember picture,overlay]
+				\draw[red, -> , very thick] (P3) ..controls ++(180:3).. (P4);
+			\end{tikzpicture}
+		\end{columns}
+		
+	\end{onlyenv}
+	
+	\begin{onlyenv}<+>
+		\textbf{3. Результат}
+		
+		\centering
+		\IG[0.75]{cmake3}
+		
+		
+	\end{onlyenv}
+
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Структура папок}
+
+	\begin{columns}[]
+		\edef\colA{0.45}
+		\begin{column}{\colA\framewidth}
+			%Колнка1
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\small, commandchars=\\\{\}, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}]
+				
+				Sample program
+				¦   CMakeLists.txt \color{red}{<==}
+				¦   main.c    \color{green}{<==}
+				¦   
+				L---build
+					¦   ALL_BUILD.vcxproj
+					¦   ALL_BUILD.vcxproj.filters
+					¦   ALL_BUILD.vcxproj.user
+					¦   CMakeCache.txt \color{cyan}{<==}
+					¦   ...
+					...   
+					¦
+					+---Debug
+					¦       pr.exe   \color{yellow}{<==}
+					¦       pr.pdb
+					...
+				
+			\end{Verbatim}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\framewidth}
+			%Колнка2
+			\textbf{Проверим программу:}
+			
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}]
+				
+				PowerShell 7.6.0-preview.6
+				
+				PS Simple program> .\build\Debug\pr.exe
+				Hello from CMake!
+				
+				PS Simple program>
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}
+
+
+	
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Теперь то же самое в консоли (Windows)}
+		
+		\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=2,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+		
+		PS C:\Users\gavre\Desktop\Simple program> +color{orange}rm -r build -Force
+		PS C:\Users\gavre\Desktop\Simple program> +color{orange} cmake -B build
+		-- Building for: Visual Studio 18 2026
+		-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.
+		-- The C compiler identification is MSVC 19.50.35724.0
+		-- The CXX compiler identification is MSVC 19.50.35724.0
+		...
+		-- Build files have been written to: C:/Users/gavre/Desktop/Simple program/build 
+		
+		+pause{}PS C:\Users\gavre\Desktop\Simple program> +color{orange} cmake --build build
+		...
+		pr.vcxproj -> C:\Users\gavre\Desktop\Simple program\build\Debug\pr.exe
+		
+		+pause{}PS C:\Users\gavre\Desktop\Simple program> .\build\Debug\pr.exe
+		Hello from CMake!  +color{red}{<==}
+
+		
+	\end{Verbatim}
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{И еще раз (Linux)}
+	
+	\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=2,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+		
+		gavreg@GvrNoutiL:.../Simple program$ +color{orange} cmake -B build_linux
+		-- The C compiler identification is GNU 14.2.0
+		-- The CXX compiler identification is GNU 14.2.0
+		...
+		-- Configuring done (6.4s)
+		-- Generating done (0.3s)
+		-- Build files have been written to: .../Simple program/build_linux
+		+pause{}gavreg@GvrNoutiL:.../Simple program$ +color{orange} cmake --build build_linux
+		...
+		[100%] Built target pr
+		gavreg@GvrNoutiL:.../Simple program$ +color{orange} tree build_linux/
+		build_linux/
+			├── CMakeCache.txt
+			├── Makefile
+			├── pr
+		...
+		+pause{}gavreg@GvrNoutiL:.../Simple program$ +color{orange}./build_linux/pr
+		Hello from CMake!   +color{red}{<==}
+		
+	\end{Verbatim}
+	
+
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Простые переменные}
+	
+	\begin{minted}[autogobble]{cmake}
+		set(<variable> <value>... [PARENT_SCOPE])
+	\end{minted}
+	
+	\verb|<variable>| --- имя переменной
+	
+	\verb|<value>| --- значение переменной 
+	
+	\verb|PARENT_SCOPE| --- родительская область видимости
+	
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					cmake_minimum_required(VERSION 4.2)
+					project("First project")
+					
+					set(A 1)
+					message("${A}")
+					set(A 1 2 3)
+					message("${A}")
+					
+					add_executable(pr main.c)
+				\end{cmakecode}
+			\end{block}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=5,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}, commandchars=+\{\}]
+				
+				PS ...> +color{orange} cmake -B build
+				...
+				1
+				1;2;3
+				... 
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Простые переменные}
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					cmake_minimum_required(VERSION 4.1)
+					project("First project")
+					
+					set(X "ФГБАОУ")
+					set(Y "ВО МГТУ")
+					set(Z "СТАНКИН")
+					
+					message(${X} ${Y} ${Z})
+					message("${X} ${Y} ${Z}")
+					
+					add_executable(pr main.c)
+				\end{cmakecode}
+			\end{block}
+
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+				\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}  cmake -B build
+				...
+				ФГБАОУВО МГТУСТАНКИН
+				ФГБАОУ ВО МГТУ СТАНКИН
+				...
+				-- Build files...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Кешированные переменные}
+	
+	\begin{minted}[autogobble]{cmake}
+		#c версии 4.2
+		set(CACHE{<variable>} [TYPE <type>] [HELP <helpstring>...] 
+				[FORCE] VALUE [<value>...])
+		
+		#до версии 4.2
+		set(<variable> <value>... CACHE <type> <docstring> [FORCE])
+	\end{minted}
+	
+	\vspace{1em}
+	
+	\begin{tabular}{|l|l|}
+		\hline
+		\textbf{Тип} &  \textbf{Описание} \\\hline
+		\Verb|BOOL|  &  Булево ON/OFF значение \\\hline
+		\Verb|FILEPATH|  &  Путь к файлу  диске  \\\hline
+		\Verb|PATH|  & Путь к папке на диске  \\\hline
+		\Verb|STRING|  &  Строка\\\hline
+		\Verb|INTERNAL|  & Строка для внутреннего использовани  \\\hline
+	\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Установка кешированных переменных через GUI}
+	
+	\begin{columns}[]
+		\edef\colA{0.45}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+			\begin{cmakecode}
+				cmake_minimum_required(VERSION 4.2.3)
+				project("First project")
+				
+				set (CACHE{A} TYPE BOOL 
+					FORCE VALUE ON)
+				set (CACHE{B}  TYPE FILEPATH 
+					FORCE VALUE "C:/Users/gavre")
+				set (CACHE{C}  TYPE STRING 
+					FORCE VALUE "lalal")
+				
+				add_executable(pr main.c)
+			\end{cmakecode}
+			\end{block}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\IG{cmake_cache}
+		\end{column}
+	\end{columns}
+		
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Кешированные переменные. Пример}
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					cmake_minimum_required(VERSION 4.1)
+					project("First project")
+					
+					set(X "ФГБАОУ" CACHE STRING  "Описание1")
+					set(Y "ВО МГТУ" CACHE STRING "Описание2")
+					set(Z "СТАНКИН" CACHE STRING "Описание3")
+					message(${X} ${Y} ${Z})
+					message("${X} ${Y} ${Z}")
+					
+					add_executable(pr main.c)
+				\end{cmakecode}
+			\end{block}
+			
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}  cmake -B build
+				...
+				ФГБАОУВО МГТУСТАНКИН
+				ФГБАОУ ВО МГТУ СТАНКИН
+				...
+				-- Build files... 
+				
+				+pause PS ...> +color{orange} cat .\build\CMakeCache.txt
+				...
+				//Описание1
+				X:STRING=ФГБАОУ
+				
+				//Описание2
+				Y:STRING=ВО МГТУ
+				
+				//Описание3
+				Z:STRING=СТАНКИН
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Изменение кешированных переменных}
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					cmake_minimum_required(VERSION 4.1)
+					project("First project")
+					
+					message(${X} ${Y} ${Z})
+					
+					add_executable(pr main.c)
+				\end{cmakecode}
+			\end{block}
+			
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}cmake -B build
+				...
+				ФГБАОУ ВО МГТУ СТАНКИН
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}	
+	
+	\pause\vspace{0.3em}\rule{\linewidth}{0.4pt}
+	
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					cmake_minimum_required(VERSION 4.1)
+					project("First project")
+					
+					set(Z "им. Баумана" CACHE STRING "Фууу")
+					message("${X} ${Y} ${Z}")
+					
+					add_executable(pr main.c)
+				\end{cmakecode}
+			\end{block}
+			
+		\end{column}
+		
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}cmake -B build
+				...
+				ФГБАОУ ВО МГТУ СТАНКИН
+				...+pause
+				PS ...> +color{orange}rm -r build -Force
+				PS ...> +color{orange}cmake -B build
+				...
+				им. Баумана
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Изменение кешированных переменных. Force}
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					...					
+					set (CACHE{A} VALUE "Адын!")
+					message("${A}")
+					set (CACHE{A} VALUE "Дуа!")
+					message("${A}")
+					set (CACHE{A} VALUE "Тури!")
+					message("${A}")
+					...
+				\end{cmakecode}
+			\end{block}
+			
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}rm -r build -Force
+				PS ...> +color{orange}cmake -B build
+				...
+				Адын!
+				Адын!
+				Адын!
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}	
+	
+	\pause\vspace{0.3em}\rule{\linewidth}{0.4pt}
+	
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					...
+					set (CACHE{A} FORCE VALUE "Адын!")
+					message("${A}")
+					set (CACHE{A} FORCE VALUE "Дуа!")
+					message("${A}")
+					set (CACHE{A} FORCE VALUE "Тури!")
+					message("${A}")
+					...
+				\end{cmakecode}
+			\end{block}
+			
+		\end{column}
+		
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}cmake -B build
+				...
+				Адын!
+				Дуа!
+				Тури!
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Переменные окружения}
+	
+	\begin{minted}[autogobble]{cmake}
+		set(ENV{<variable>} [<value>])
+	\end{minted}
+	
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+			\begin{cmakecode}
+				cmake_minimum_required(VERSION 4.2.3)
+				project("First project")				
+				
+				set  (ENV{A} 1213)				
+				message ("$ENV{A}")		
+						
+				execute_process(COMMAND cmd /C "echo %A%")
+								
+				message("$ENV{PATH}")
+				
+				add_executable(pr main.c)
+			\end{cmakecode}
+			\end{block}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}cmake -B build
+				...
+				Моя переменная = 1213
+				1213
+				C:\Program Files\WindowsApps\Microsoft.P
+				owerShell_7.5.4.0_x64__8wekyb3d8bbwe;C:\
+				ProgramFiles\ImageMagick-7.1.1-Q16-HDRI;
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Основные встроенные переменные CMake}
+	\small
+	\begin{tabular}{>{\ttfamily}l l l}
+		\hline
+		\textbf{Переменная} & \textbf{Описание} & \textbf{Пример} \\
+		\hline
+		CMAKE\_SOURCE\_DIR & Корень исходников & /home/user/proj \\
+		CMAKE\_BINARY\_DIR & Корень сборки & /home/user/proj/build \\
+		CMAKE\_CURRENT\_SOURCE\_DIR & Текущий исходник & /home/user/proj/src \\
+		CMAKE\_VERSION & Версия CMake & 3.27.1 \\
+		CMAKE\_SYSTEM & ОС & Linux, Windows \\
+		CMAKE\_SYSTEM\_NAME & Имя ОС & Linux \\
+		CMAKE\_SYSTEM\_PROCESSOR & Архитектура & x86\_64 \\
+		CMAKE\_BUILD\_TYPE & Тип сборки & Debug \\
+		CMAKE\_INSTALL\_PREFIX & Путь установки & /usr/local \\
+		PROJECT\_NAME & Имя проекта & MyProject \\
+		PROJECT\_SOURCE\_DIR & Корень проекта & /home/user/proj \\
+		EXECUTABLE\_OUTPUT\_PATH & Путь для bin & /home/user/proj/build/bin \\
+		CMAKE\_C\_STANDARD & Стандарт C & 90, 99, 11, 17, 23 \\
+		CMAKE\_CXX\_STANDARD & Стандарт C++ & 98, 11, 14, 17, 20, 23 \\
+		CMAKE\_C\_STANDARD\_REQUIRED & Треб. стандарт C & TRUE / FALSE \\
+		CMAKE\_CXX\_STANDARD\_REQUIRED & Треб. стандарт C++ & TRUE / FALSE \\
+		\hline
+	\end{tabular}
+	
+	\footnotesize{\textit{Полный список:} \ttfamily cmake --help-variable-list}
+	
+	\footnotesize{\textit{Информация о переменной:} \ttfamily cmake --help-variable ИМЯ\_ПЕРЕМЕННОЙ}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Встроенные переменные связанные с компилятором}
+	\small
+	\begin{tabular}{>{\ttfamily}l l l}
+		\hline
+		\textbf{Переменная} & \textbf{Описание} & \textbf{Пример} \\
+		\hline
+		CMAKE\_C\_COMPILER & Компилятор C & /usr/bin/gcc \\
+		CMAKE\_CXX\_COMPILER & Компилятор C++ & /usr/bin/g++ \\
+		CMAKE\_COMPILER\_IS\_GNU\_CC & GNU C компилятор? & TRUE / FALSE \\
+		CMAKE\_COMPILER\_IS\_GNU\_CXX & GNU C++ компилятор? & TRUE / FALSE \\
+		CMAKE\_C\_COMPILER\_ID & Идент-ор. C компилятора & GNU, Clang, MSVC \\
+		CMAKE\_CXX\_COMPILER\_ID & Идент-ор. C++ компилятора & GNU, Clang, MSVC \\
+		CMAKE\_C\_COMPILER\_VERSION & Версия C компилятора & 11.4.0 \\
+		CMAKE\_CXX\_COMPILER\_VERSION & Версия C++ компилятора & 11.4.0 \\
+		CMAKE\_C\_FLAGS & Флаги для C компилятора & -O2 -Wall \\
+		CMAKE\_CXX\_FLAGS & Флаги для C++ компилятора & -O2 -Wall -std=c++11 \\
+		CMAKE\_C\_FLAGS\_DEBUG & Флаги для Debug (C) & -g \\
+		CMAKE\_CXX\_FLAGS\_DEBUG & Флаги для Debug (C++) & -g \\
+		CMAKE\_C\_FLAGS\_RELEASE & Флаги для Release (C) & -O3 -DNDEBUG \\
+		CMAKE\_CXX\_FLAGS\_RELEASE & Флаги для Release (C++) & -O3 -DNDEBUG \\
+		CMAKE\_EXE\_LINKER\_FLAGS & Флаги линковщика & -static -lpthread \\
+		CMAKE\_LINKER & Линковщик & /usr/bin/ld \\
+		\hline
+	\end{tabular}
+	
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Условия}
+	
+	\begin{cmakecode}
+		if(<условие>)
+			Команды
+		elseif(<другое условие>) # необязательно. можно повторить
+			Команды
+		else()              # необязательно
+			Команды
+		endif()
+	\end{cmakecode}
+	
+	\hfill
+	
+	\mintinline{cmake}|if(<константа>)|
+	
+	Истина --- 1 ON YES Y TRUE $\neq 0$
+	
+	Ложь --- 0 OFF NO FALSE N IGNORE NOTFOUND \"\" "...-NOTFOUND"
+	
+	\hfill
+	
+	\mintinline{cmake}|if(<перееменная>)|
+	
+	Истина --- существующая переменная, не являющаяся ложность константой
+	
+	Ложь --- во всех остальных случаях
+	
+	\hfill
+	
+	\mintinline{cmake}|if("<строка>")|
+	
+	Истина --- Если является истинной константой
+	
+	Ложь --- во всех остальных случаях
+	
+\end{frame}
+
+
+\begin{frame}\frametitle{Логические операторы}
+	
+	\mintinline{cmake}{if(NOT <условие>)} --- отрицание
+	
+	\hfill
+	
+	\mintinline{cmake}{if(<условие1> AND <условие2>)} --- логическое И
+	
+	\hfill
+	
+	\mintinline{cmake}{if(<условие1> OR <условие2>)} --- логическое ИЛИ
+	
+	\hfill
+	
+	\mintinline{cmake}{if((условие1) AND (условие2 OR (услвие3)))} --- сложыне условия
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Компараторы}
+	
+
+	\mintinline{cmake}{if(<variable|string> ХХХ <variable|string>)} 
+	
+	\hfill
+	
+	\begin{tabularx}{\textwidth}{>{\ttfamily}rcX}
+		XXX: &&\\
+		LESS & --- & строго меньше \\
+		GREATER & --- & строго больше \\
+		EQUAL & --- & равно \\
+		LESS\_EQUAL & --- & меньше или равно (3.7+) \\
+		GREATER\_EQUAL & --- & больше или равно (3.7+) \\
+		STRLESS & --- & лексикографически меньше \\
+		STRGREATER & --- & лексикографически больше \\
+		STREQUAL & --- & лексикографически равно \\
+		STRLESS\_EQUAL & --- & лексикографически меньше или равно (3.7+) \\
+		STRGREATER\_EQUAL & --- & лексикографически больше или равно (3.7+) \\
+		MATCHES & --- & соответствует регулярному выражению (группы~() сохраняются в CMAKE\_MATCH\_<n> (2.6+)) \\
+	\end{tabularx}
+
+
+	
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Сравнение версий и путей}
+	
+	\mintinline{cmake}{if(<variable|string> XXX <variable|string>)} 
+	
+	\hfill
+	
+	\textbf{Сравнение версий:}
+	\begin{tabularx}{\textwidth}{>{\ttfamily}rcX}
+		VERSION\_LESS & --- & строго меньше \\
+		VERSION\_GREATER & --- & строго больше \\
+		VERSION\_EQUAL & --- & равно \\
+		VERSION\_LESS\_EQUAL & --- & меньше или равно (3.7+) \\
+		VERSION\_GREATER\_EQUAL & --- & больше или равно (3.7+) \\
+	\end{tabularx}
+	
+	\smallskip
+	Формат версии: major[.minor[.patch[.tweak]]], пропущенные компоненты~=~0
+	
+	\hfill
+	
+	\textbf{Сравнение путей (3.24+):}
+	\begin{tabularx}{\textwidth}{>{\ttfamily}rcX}
+		PATH\_EQUAL & --- & покомпонентное сравнение путей \\
+	\end{tabularx}
+	
+	\smallskip
+	Коллапсирование разделителей:
+	\mintinline{cmake}{if("/a//b/c" PATH_EQUAL "/a/b/c")} = true
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Циклы. Foreach}
+	
+	\begin{minted}[autogobble]{cmake}
+		foreach(<loop_var> <items>)
+		<commands>
+		endforeach()
+	\end{minted}
+	
+	
+	\begin{columns}[]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\begin{block}{CMakeLists.txt}
+				\begin{cmakecode}
+					foreach(A "Раз два три")
+					message("Итерация = ${A}")
+					endforeach()
+					
+					foreach(A Раз два три)
+					message("Итерация = ${A}")
+					endforeach()
+					
+					set(X Вася Петя Маша)
+					
+					foreach(A ${X})
+					message("Имя = ${A}")
+					endforeach()
+				\end{cmakecode}
+			\end{block}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=4,fontsize=\footnotesize, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black},commandchars=+\{\}]
+				
+				PS ...> +color{orange}cmake -B build
+				...
+				Итерация = Раз два три
+				Итерация = Раз
+				Итерация = два
+				Итерация = три
+				Имя = Вася
+				Имя = Петя
+				Имя = Маша
+				...
+				
+			\end{Verbatim}
+		\end{column}
+	\end{columns}
+	
+\end{frame}
+
+	
+\end{document}

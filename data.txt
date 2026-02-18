@@ -1,0 +1,149 @@
+Ñòðóêòóðà ïàïîê
+Ñåðèéíûé íîìåð òîìà: AFF5-6F0A
+C:.
+¦   CMakeLists.txt
+¦   files.txt
+¦   main.c
+¦   
+L---build
+    ¦   ALL_BUILD.vcxproj
+    ¦   ALL_BUILD.vcxproj.filters
+    ¦   ALL_BUILD.vcxproj.user
+    ¦   CMakeCache.txt
+    ¦   cmake_install.cmake
+    ¦   First project.slnx
+    ¦   pr.vcxproj
+    ¦   pr.vcxproj.filters
+    ¦   pr.vcxproj.user
+    ¦   ZERO_CHECK.vcxproj
+    ¦   ZERO_CHECK.vcxproj.filters
+    ¦   
+    +---ALL_BUILD.dir
+    ¦   +---Debug
+    ¦   +---MinSizeRel
+    ¦   +---Release
+    ¦   L---RelWithDebInfo
+    +---CMakeFiles
+    ¦   ¦   cmake.check_cache
+    ¦   ¦   CMakeConfigureLog.yaml
+    ¦   ¦   generate.stamp
+    ¦   ¦   generate.stamp.depend
+    ¦   ¦   generate.stamp.list
+    ¦   ¦   InstallScripts.json
+    ¦   ¦   TargetDirectories.txt
+    ¦   ¦   
+    ¦   +---4.2.3
+    ¦   ¦   ¦   CMakeCCompiler.cmake
+    ¦   ¦   ¦   CMakeCXXCompiler.cmake
+    ¦   ¦   ¦   CMakeDetermineCompilerABI_C.bin
+    ¦   ¦   ¦   CMakeDetermineCompilerABI_CXX.bin
+    ¦   ¦   ¦   CMakeRCCompiler.cmake
+    ¦   ¦   ¦   CMakeSystem.cmake
+    ¦   ¦   ¦   VCTargetsPath.txt
+    ¦   ¦   ¦   VCTargetsPath.vcxproj
+    ¦   ¦   ¦   
+    ¦   ¦   +---CompilerIdC
+    ¦   ¦   ¦   ¦   CMakeCCompilerId.c
+    ¦   ¦   ¦   ¦   CompilerIdC.exe
+    ¦   ¦   ¦   ¦   CompilerIdC.vcxproj
+    ¦   ¦   ¦   ¦   
+    ¦   ¦   ¦   +---Debug
+    ¦   ¦   ¦   ¦   ¦   CMakeCCompilerId.obj
+    ¦   ¦   ¦   ¦   ¦   CompilerIdC.exe.recipe
+    ¦   ¦   ¦   ¦   ¦   vcpkg.applocal.log
+    ¦   ¦   ¦   ¦   ¦   
+    ¦   ¦   ¦   ¦   L---CompilerIdC.tlog
+    ¦   ¦   ¦   ¦           CL.command.1.tlog
+    ¦   ¦   ¦   ¦           Cl.items.tlog
+    ¦   ¦   ¦   ¦           CL.read.1.tlog
+    ¦   ¦   ¦   ¦           CL.write.1.tlog
+    ¦   ¦   ¦   ¦           CompilerIdC.lastbuildstate
+    ¦   ¦   ¦   ¦           link.command.1.tlog
+    ¦   ¦   ¦   ¦           link.read.1.tlog
+    ¦   ¦   ¦   ¦           link.secondary.1.tlog
+    ¦   ¦   ¦   ¦           link.write.1.tlog
+    ¦   ¦   ¦   ¦           
+    ¦   ¦   ¦   L---tmp
+    ¦   ¦   +---CompilerIdCXX
+    ¦   ¦   ¦   ¦   CMakeCXXCompilerId.cpp
+    ¦   ¦   ¦   ¦   CompilerIdCXX.exe
+    ¦   ¦   ¦   ¦   CompilerIdCXX.vcxproj
+    ¦   ¦   ¦   ¦   
+    ¦   ¦   ¦   +---Debug
+    ¦   ¦   ¦   ¦   ¦   CMakeCXXCompilerId.obj
+    ¦   ¦   ¦   ¦   ¦   CompilerIdCXX.exe.recipe
+    ¦   ¦   ¦   ¦   ¦   vcpkg.applocal.log
+    ¦   ¦   ¦   ¦   ¦   
+    ¦   ¦   ¦   ¦   L---CompilerIdCXX.tlog
+    ¦   ¦   ¦   ¦           CL.command.1.tlog
+    ¦   ¦   ¦   ¦           Cl.items.tlog
+    ¦   ¦   ¦   ¦           CL.read.1.tlog
+    ¦   ¦   ¦   ¦           CL.write.1.tlog
+    ¦   ¦   ¦   ¦           CompilerIdCXX.lastbuildstate
+    ¦   ¦   ¦   ¦           link.command.1.tlog
+    ¦   ¦   ¦   ¦           link.read.1.tlog
+    ¦   ¦   ¦   ¦           link.secondary.1.tlog
+    ¦   ¦   ¦   ¦           link.write.1.tlog
+    ¦   ¦   ¦   ¦           
+    ¦   ¦   ¦   L---tmp
+    ¦   ¦   +---VCTargetsPath
+    ¦   ¦   ¦   L---x64
+    ¦   ¦   ¦       L---Debug
+    ¦   ¦   ¦           ¦   VCTargetsPath.recipe
+    ¦   ¦   ¦           ¦   
+    ¦   ¦   ¦           L---VCTargetsPath.tlog
+    ¦   ¦   ¦                   VCTargetsPath.lastbuildstate
+    ¦   ¦   ¦                   
+    ¦   ¦   L---x64
+    ¦   ¦       L---Debug
+    ¦   +---673c2bc2f511fd7080b84f68757dd263
+    ¦   ¦       generate.stamp.rule
+    ¦   ¦       
+    ¦   L---pkgRedirects
+    +---Debug
+    ¦       pr.exe
+    ¦       pr.pdb
+    ¦       
+    +---pr.dir
+    ¦   +---Debug
+    ¦   ¦   ¦   main.obj
+    ¦   ¦   ¦   pr.exe.recipe
+    ¦   ¦   ¦   pr.ilk
+    ¦   ¦   ¦   pr.log
+    ¦   ¦   ¦   vc145.pdb
+    ¦   ¦   ¦   vcpkg.applocal.log
+    ¦   ¦   ¦   
+    ¦   ¦   L---pr.tlog
+    ¦   ¦           CL.command.1.tlog
+    ¦   ¦           Cl.items.tlog
+    ¦   ¦           CL.read.1.tlog
+    ¦   ¦           CL.write.1.tlog
+    ¦   ¦           CustomBuild.command.1.tlog
+    ¦   ¦           CustomBuild.read.1.tlog
+    ¦   ¦           CustomBuild.write.1.tlog
+    ¦   ¦           link.command.1.tlog
+    ¦   ¦           link.read.1.tlog
+    ¦   ¦           link.secondary.1.tlog
+    ¦   ¦           link.write.1.tlog
+    ¦   ¦           pr.lastbuildstate
+    ¦   ¦           
+    ¦   +---MinSizeRel
+    ¦   +---Release
+    ¦   L---RelWithDebInfo
+    +---x64
+    ¦   L---Debug
+    ¦       L---ZERO_CHECK
+    ¦           ¦   ZERO_CHECK.log
+    ¦           ¦   ZERO_CHECK.recipe
+    ¦           ¦   
+    ¦           L---ZERO_CHECK.tlog
+    ¦                   CustomBuild.command.1.tlog
+    ¦                   CustomBuild.read.1.tlog
+    ¦                   CustomBuild.write.1.tlog
+    ¦                   ZERO_CHECK.lastbuildstate
+    ¦                   
+    L---ZERO_CHECK.dir
+        +---Debug
+        +---MinSizeRel
+        +---Release
+        L---RelWithDebInfo

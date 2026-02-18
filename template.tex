@@ -1,0 +1,122 @@
+\makeatletter
+\defbeamertemplate*{title page}{my theme}
+{
+	
+	\hfill
+	
+	\begin{beamercolorbox}[wd=.9\paperwidth,center,]{title}%
+		
+	\end{beamercolorbox}%	
+	
+	\vbox to 1em {}
+	
+	\begin{beamercolorbox}[wd=.9\paperwidth,center,]{title}%
+		\usebeamerfont{subtitle}%
+		\hfill
+		
+		\insertsubtitle
+		
+		\usebeamerfont{title}%
+		\inserttitle{} \vspace{0.5ex}
+		
+		
+		
+	\end{beamercolorbox}%	
+	\hfill\hfill
+	
+	\begin{beamercolorbox}[wd=.9\paperwidth,center,]{}%
+		\usebeamerfont{author}%
+		\hfill \\[0.5em]
+		\insertauthor{} \\[0.5em]
+		\regals
+		    
+		\vbox to 1em{}
+		\usebeamerfont{institute}%
+		\insertinstitute {}
+		
+		\vbox to 1em{}			
+		
+	\end{beamercolorbox}%	
+	\hfill\hfill
+	
+	
+	
+	{ \usebeamerfont{institute}\hfill Обновлено: \insertshortdate{} }
+	
+	\vbox to 5em{}
+	
+	
+}
+
+
+		
+
+
+\vspace{1.5cm}		
+\defbeamertemplate*{footline}{my theme}{
+	\edef\overlayscount{\fpeval{\insertframeendpage-\insertframestartpage+1}}
+	\edef\currentoverlaynumber{\fpeval{\thepage-\insertframestartpage + 1}}
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.25\paperwidth,ht=3.25ex,dp=0ex,center,sep=1pt]{author in head/foot}%
+			\usebeamerfont{author in head/foot}%
+			\insertauthor 
+			\beamer@ifempty{\insertshortinstitute}{}
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.65\paperwidth,ht=3.25ex,dp=0ex,center,sep=1pt]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertshortinstitute
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.1\paperwidth,ht=3.25ex,dp=0ex,center, sep=0.5pt]{date in head/foot}%
+			\usebeamerfont{date in head/foot}
+			\footnotesize \expandafter{\insertframenumber}%
+			 \ifnum\overlayscount=1\else%
+			 \mbox{\scriptsize(\currentoverlaynumber/\overlayscount)}\,%
+			 \fi%
+			 /%
+			 \expandafter{\inserttotalframenumber}
+	\end{beamercolorbox}}%
+}
+
+
+
+\makeatletter
+\beamer@theme@subsectionfalse
+\makeatother
+
+ % Head
+%\defbeamertemplate*{headline}{miniframes theme}
+%{%
+%	\begin{beamercolorbox}[colsep=1.5pt]{upper separation line head}
+%	\end{beamercolorbox}
+%	\begin{beamercolorbox}{section in head/foot}
+%		\vskip2pt\insertnavigation{\paperwidth}\vskip2pt
+%	\end{beamercolorbox}%
+%	\ifbeamer@theme@subsection%
+%	\begin{beamercolorbox}[colsep=1.5pt]{middle separation line head}
+%	\end{beamercolorbox}
+%	\begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+%		leftskip=.3cm,rightskip=.3cm plus1fil]{subsection in head/foot}
+%		\usebeamerfont{subsection in head/foot}\insertsubsectionhead
+%	\end{beamercolorbox}%
+%	\fi%
+%	\begin{beamercolorbox}[colsep=1.5pt]{lower separation line head}
+%	\end{beamercolorbox}
+%}
+
+{
+	
+}
+
+
+\makeatother
+
+
+
+
+
+
+%float page top aligment
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother

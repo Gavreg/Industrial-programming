@@ -1,0 +1,129 @@
+\documentclass[10pt, aspectratio=1610]{beamer}
+%\documentclass{article}
+%\usepackage{beamerarticle}
+\mode<article>
+{
+	\usepackage[a4paper]{geometry}
+}
+
+
+
+\edef\tlCourse{Промышленное программирование}
+\edef\tlPartName{}
+\edef\tlPartNumber{0}
+\edef\tlThemeName{Введение}
+\edef\tlThemeNumberLocal{0}
+\edef\tlThemeNumberGlobal{0}
+
+
+%\documentclass[10pt, handout]{beamer}
+%\setbeameroption{show notes}
+
+%\documentclass[10pt, a4paper]{article}
+%\usepackage{beamerarticle}
+
+\input{preambule.tex}
+
+\graphicspath{{Images/}{Images/\jobname/}}
+
+\date{\today}
+
+\renewcommand{\LectionNumber}{\tlThemeNumberGlobal}
+\renewcommand{\LectionTheme}{Тема \tlThemeNumberGlobal \\ \tlThemeName}
+\title{\LectionTheme}
+\subtitle{\tlCourse}
+
+
+\usepackage{fancyvrb}
+\usepackage{minted}
+
+
+
+\begin{document}
+	 
+	\mode<presentation>
+	{
+		\input{template.tex}	
+	}
+	
+	
+\mode<presentation>
+{	
+	\frame{\maketitle}			
+}
+\mode<article>
+{
+	\begin{center}
+		
+		\Large
+		
+		\title
+		
+		\LectionTheme
+	\end{center}
+}
+	
+
+	
+\begin{frame}\frametitle{О чем дисциплина <<Промышленное программирование>>}
+
+\textbf{Цель дисциплины} --- подготовка студентов к профессиональной разработке программного обеспечения в промышленных условиях, включая:
+\begin{itemize}
+	\item развитие навыков командной и модульной разработки на C++;
+	\item изучение принципов контейнеризации и работы в Linux-среде;
+	\item освоение современных инструментов сборки, контроля версий и CI/CD;
+	\item формирование понимания процессов автоматизированной сборки, тестирования и развертывания ПО.
+\end{itemize}
+
+\end{frame}
+	
+
+	
+
+\begin{frame}\frametitle{Структура дисциплины (10 лекций + 5 лабораторных работ)}
+	
+		
+	\textbf{Раздел 1. Разработка модульных программ}
+	\begin{enumerate}
+		\item Системы сборки проектов на языке С/С++
+		\item Организация модульной и командной разработки
+		\global\edef\tmp{\theenumi}
+	\end{enumerate}
+	
+	\textbf{Раздел 2. Инструменты и системы контроля версий}
+	\begin{enumerate}\setcounter{enumi}{\tmp}
+		\item Задача контроля версий
+		\item Локальная работа с Git
+		\item Работа с удалённым Git-репозиторием
+		\global\edef\tmp{\theenumi}
+	\end{enumerate}
+	
+	
+	\textbf{Раздел 3. Основы работы с Linux и Docker}
+	\begin{enumerate}\setcounter{enumi}{\tmp}
+		\item Работа с командной строкой Linux. Сборка программ
+		\item Docker и контейнеризация
+		\item Docker и контейнеризация
+		\global\edef\tmp{\theenumi}
+	\end{enumerate}
+		
+	\textbf{Раздел 4. Continuous Integration, Continuous Delivery / Deployment}
+	\begin{enumerate}\setcounter{enumi}{\tmp}
+		\item CI/CD: Введение и теоретические основы.
+		\item CI/CD: практика.
+		\global\edef\tmp{\theenumi}
+	\end{enumerate}
+	
+	\textbf{\Large +Зачет!} 
+	
+\end{frame}
+
+
+\begin{frame}\frametitle{Структура дисциплины (5 лабораторных работ)}
+	
+\end{frame}
+
+
+
+	
+\end{document}
