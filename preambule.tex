@@ -102,6 +102,7 @@
 \usetikzlibrary{decorations}
 \usetikzlibrary{decorations.pathreplacing}
 \usetikzlibrary{matrix}
+\usetikzlibrary{fit}
 
 \newcommand{\rememb}[1]{\parbox{0pt}{}\tikz[remember picture,baseline=-0.5ex]{\draw node[inner sep=0pt, outer sep=0pt] (#1){\strut};}}
 
@@ -290,6 +291,7 @@
 \mode<presentation>
 {
 	\newminted[cppcode]{c++}{linenos, autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+
 	
 	\newminted[cppresumecode]{c++}{linenos, firstnumber=last,  autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
 	

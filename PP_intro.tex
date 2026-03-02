@@ -125,5 +125,38 @@
 
 
 
+
+\begin{frame}[fragile]\frametitle{Будем на связи!}
+	
+	
+	
+	\begin{columns}[onlytextwidth]
+		\edef\colA{0.5}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\centering \textbf{Общий канал}\\[1em]
+			\tikz{
+				\node[inner sep=0pt,rounded corners=5mm, clip]{
+					\color{red!50!black}\qrcode[height=0.8\textwidth]{https://t.me/itivs_ag}
+				};
+			}\\[1em]
+			{\small\verb|https://t.me/itivs_ag|} \\
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\centering \textbf{Канал курса}\\[1em]
+			\tikz{
+				\node[inner sep=0pt,rounded corners=5mm, clip]{
+					\color{green!50!black}\qrcode[height=0.8\textwidth]{https://t.me/+v9l0ym9K9dZjMWJi}
+				};
+			}\\[1em]
+			{\small\verb|https://t.me/+v9l0ym9K9dZjMWJi|} \\
+		\end{column}
+	\end{columns}
+	
+	
+\end{frame}
+
+
 	
 \end{document}
