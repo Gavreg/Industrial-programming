@@ -70,7 +70,10 @@
 	
 
 
+\if 0  %====================================================================================
 
+
+\fi %==========================================================================
 
 
 \QRFRAME
@@ -300,7 +303,7 @@
 		qe.vcxproj -> .../build/Debug/qe.exe
 		
 		\pause{}PS ...> \color{orange} ./build/Debug/qe.exe
-		1 -5 6
+		/color{orange}1 -5 6
 		x1=3 x2=2 \color{red} <== все работает! 
 		\pause{}
 		
@@ -433,7 +436,7 @@
 		qe.vcxproj -> C:.../build/Debug/qe.exe
 		
 		PS ...> \color{orange}./build/Debug/qe.exe
-		1 -9 20
+		/color{orange}1 -9 20
 		x1=5 x2=4
 		x1 is not odd \color{red}<==
 		
@@ -660,5 +663,345 @@
 \end{frame}
 
 
+
+\section {Статические библиотеки}
+
+
+\begin{frame}[fragile]\frametitle{Статические библиотеки}
+	
+	
+	\begin{alertblock}{Статическая библиотека (static library) ---}
+		это набор скомпилированных объектных файлов (\verb|.o| или \verb|.obj|), объединенных в один архивный файл (с расширением \verb|.lib| в Windows или \verb|.a| в Linux/macOS), который связывается с программой на этапе компоновки (линковки).
+	\end{alertblock}
+	
+	\centering
+	
+	\begin{tikzpicture}[
+		file/.style={draw, font=\ttfamily},
+		lib/.style={draw, font=\ttfamily\itshape\color{ForestGreen},}
+		]
+		\draw node[file] (maincpp) {main.cpp};
+		
+		
+		\draw (maincpp) ++ (0:3) node[file] (mymathcpp) {mymath.cpp}; 
+		
+		\draw (mymathcpp) ++(90:2) node[file] (mymathh) {mymath.h};
+		
+		\draw (mymathh) +(90:2) node[lib] (typle) {<typle>};
+		
+		\draw (maincpp) +(110:5) node[lib] (print) {<print>}
+		+(130:5) node[lib] (clocale){<clocale>}
+		+(150:5) node[lib] (exception) {<exception>};
+		
+		\draw (maincpp) +(80:4) node[file] (pointh) {point.h};
+		
+		\draw[-Latex] 	(mymathh) -- (maincpp)  ;
+		\draw[-Latex]	(mymathh) -- (mymathcpp);
+		\draw[-Latex]	(typle) -- (mymathh);
+		\draw[-Latex]   (print) -- (maincpp) ;
+		\draw[-Latex]   (clocale) -- (maincpp) ;
+		\draw[-Latex]   (exception) -- (maincpp) ; 	
+		\draw[-Latex]   (pointh) -- (maincpp) ; 	
+		\draw[-Latex]   (pointh) -- (mymathh) ; 
+		
+		%\pause
+		
+		\draw (mymathcpp) ++(1,0) node [right, align=left] (a) {Зачем постоянно\\перекомпилировать?};
+		
+		\draw node [draw, red, fit=(a)(mymathcpp)]{};
+		
+	\end{tikzpicture}
+	
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]\frametitle{Команды Cmake для работы с библиотеками}
+	
+	
+	\textbf{Объявление библиотеки}
+	
+	\begin{cmakecode}[linenos = false, fontsize=\normalsize]
+		add_library(<name> [<type>] [EXCLUDE_FROM_ALL] <sources>...)
+	\end{cmakecode}
+	
+	\textbf{type:}
+	
+	\verb|STATIC| --- статическая библиотека 
+	
+	\verb|SHARED| --- динамическая библиотека
+	
+	\verb|MODULE| --- модуль
+	
+	\vspace{2em}
+	
+	\textbf{Подключение библиотеки}
+	
+	\begin{cmakecode}[linenos = false, fontsize=\normalsize]
+		target_link_libraries(<target> ... <item>... ...)
+		
+		target_link_libraries(<target>
+			{INTERFACE|PUBLIC|PRIVATE} <item>...
+			[{INTERFACE|PUBLIC|PRIVATE} <item>...]...)
+	\end{cmakecode}
+	
+	
+	\verb|target| --- к чему подключаем (программа или библиотека)
+	
+	\verb|item| --- что подключаем (библиотека)
+	
+	
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]\frametitle{Создадим библиотеку mymath}
+	
+	\begin{block}{CMakeLists.txt}
+		\begin{cmakecode}
+			cmake_minimum_required(VERSION 4.2)
+			project ("quadratic equation")
+			set (CMAKE_CXX_STANDARD 23)
+			
+			#Создаем библиотеку
+			add_library(mymath mymath.cpp)
+			#Создаем саму программу
+			add_executable(qe main.cpp )
+			#Подключаем
+			target_link_libraries(qe mymath)
+		\end{cmakecode}
+	\end{block}
+	
+	\pause
+	
+	\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=2,fontsize=\small, commandchars=\\\{\}, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}]
+		
+		PS ...> \color{orange}cmake -B build ; cmake --build build/
+		...
+		mymath.vcxproj -> .../build/Debug/mymath.lib \color{red} <== библиотека!
+		qe.vcxproj -> .../build/Debug/qe.exe \color{green} <== программа!
+		
+		PS ...> \color{orange} ./build/Debug/qe.exe
+		/color{orange}1 -5 6
+		x1=3 x2=2x1 is not odd      \color{yellow} <== все работает!
+
+		
+	\end{Verbatim}
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Проведём эксперимент}
+	
+		\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=2,fontsize=\small, commandchars=\\\{\}, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}]
+		
+		PS ...> \color{orange}mkdir new_folder
+		
+		Directory: C:/...
+		
+		Mode                 LastWriteTime         Length Name
+		----                 -------------         ------ ----
+		d----          12.03.2026     1:18                new_folder
+		
+		PS ...> \color{orange}cp ./build/Debug/qe.exe ./new_folder/
+		PS ...> \color{orange}dir ./new_folder/
+		
+		Directory: C:/.../new_folder
+		
+		Mode                 LastWriteTime         Length Name
+		----                 -------------         ------ ----
+		-a---          12.03.2026     1:05        1106432 qe.exe
+		PS ...> ./new_folder/qe.exe
+		/color{orange}1 -5 6
+		x1=3 x2=2x1 is not odd      \color{yellow} <== все работает!
+		PS ...> /color{orange}rm -r ./new_folder
+		
+	\end{Verbatim}
+	
+\end{frame}
+
+\begin{frame}\frametitle{Как это выглядит в IDE}
+	
+	\centering
+	
+	\begin{tikzpicture}
+		\draw node [inner sep = 0pt, outer sep = 0pt, anchor = south west] {\includegraphics[width=0.8\linewidth]{vslib.jpg}};
+		%\draw (0,0) grid (10,6);
+		
+		\draw [-Latex, red, very thick] (1.5,3.5) -- (3,3.1);
+		\draw [-Latex, red, very thick] (4,3.1) -- (5,4.9);
+		\draw [-Latex, red, very thick] (5.5,4.8) -- (6.5,4.5);
+		
+		\draw [-Latex, red, very thick] (5.5,4.8) -- (6.5,4.5);
+		\draw[Latex-, red, very thick] (1,4.9) -- ++(up:1) node [fill=white] [above right] {\footnotesize проект библиотеки};
+	\end{tikzpicture}
+	
+\end{frame}
+
+
+\section {Динамические библиотеки}
+
+\begin{frame}\frametitle{Динамические библиотеки}
+	
+	\begin{alertblock}{Динамическая библиотека (разделяемая библиотека, shared library) ---}
+		 это файл, содержащий скомпилированный код и данные, который загружается в память во время выполнения программы, а не включается непосредственно в исполняемый файл.
+	\end{alertblock}
+	
+	\textbf{Основные отличия от статических библиотек:}
+	\begin{itemize}
+		\item Линковка на этапе выполнения.
+		\item Машинный код расположен в отдельном файле.
+		\item Загружаются в память по потребности.
+		\item Одна библиотека может многократно использоваться разными программами.
+		\item Работает медленнее.
+		\item Могут быть проблемы с совместимостью.
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Создадим динамическую библиотеку mymath}
+	
+	\begin{block}{CMakeLists.txt}
+		\begin{cmakecode}
+			cmake_minimum_required(VERSION 4.2)
+			project ("quadratic equation")
+			set (CMAKE_CXX_STANDARD 23)
+			
+			#Создаем динамическую библиотеку
+			add_library(mymath SHARED mymath.cpp) #добавили SHARED
+			#Создаем саму программу
+			add_executable(qe main.cpp )
+			#Подключаем
+			target_link_libraries(qe mymath)
+		\end{cmakecode}
+	\end{block}
+	
+	\pause
+	
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Подправим код библиотеки для dll}
+	
+	\begin{block}{mymath.h}
+		\begin{cppcode}
+			#include <tuple>
+			#include "point.h"
+			
+			// Этот макрос будет экспортировать функции из DLL
+			#ifdef MYMATH_EXPORTS
+				#define MYMATH_API __declspec(dllexport) //функция экспортируется
+			#else
+				#define MYMATH_API __declspec(dllimport) //функция импортируется
+			#endif
+			
+			MYMATH_API std::tuple<double,double> quadratic_equation(double, double, double);
+			
+			MYMATH_API inline bool isEven(int n) {
+				return n % 2 == 0;
+			}
+		\end{cppcode}
+		
+	\end{block}
+	
+	\begin{block}{mymath.cpp}
+		\begin{cppcode}
+			...	
+			#define MYMATH_EXPORTS //Добавляем макрос
+			#include "mymath.h"
+			...
+		\end{cppcode}
+		
+	\end{block}
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Схема проекта с динамической библиотекой}
+	
+	\centering
+	
+		\begin{tikzpicture}[
+		file/.style={draw, font=\ttfamily},
+		lib/.style={draw, font=\ttfamily\itshape\color{ForestGreen},}
+		]
+		\draw node[file] (maincpp) {main.cpp};
+		
+		
+		\draw (maincpp) ++ (0:3) node[file] (mymathcpp) {mymath.cpp}; 
+		
+		\draw (mymathcpp) ++(90:2) node[file] (mymathh) {mymath.h};
+		
+%		\draw (mymathh) +(90:2) node[lib] (typle) {<typle>};
+		
+%		\draw (maincpp) +(110:5) node[lib] (print) {<print>}
+%		+(130:5) node[lib] (clocale){<clocale>}
+%		+(150:5) node[lib] (exception) {<exception>};
+		
+		\draw (maincpp) +(80:4) node[file] (pointh) {point.h};
+		
+		\draw[-Latex] 	(mymathh) -- (maincpp)  ;
+		\draw[-Latex]	(mymathh) -- (mymathcpp);
+%		\draw[-Latex]	(typle) -- (mymathh);
+%		\draw[-Latex]   (print) -- (maincpp) ;
+%		\draw[-Latex]   (clocale) -- (maincpp) ;
+%		\draw[-Latex]   (exception) -- (maincpp) ; 	
+		\draw[-Latex]   (pointh) -- (maincpp) ; 	
+		\draw[-Latex]   (pointh) -- (mymathh) ; 
+		
+		\draw (mymathh.north) node [above right, xshift=0cm, align=left,font=\footnotesize]{Тут лежит\\\verb|MYMATH_API ... quadratic_equation(...);|};
+		\draw (mymathcpp.south west) node (a) [below right, xshift=0cm, align=left,font=\footnotesize] {Увидит\\\verb|__declspec(dllexport) ... |\\\verb|quadratic_equation(...);|};
+		
+		\draw (maincpp.south east) node (b) [below left, xshift=0cm, align=right,font=\footnotesize] {Увидит\\\verb|__declspec(dllimport) ... |\\\verb|quadratic_equation(...);|};
+		
+		\draw (mymathcpp.north) node (c)  [above right,align=left,font=\footnotesize] {\verb|#define MYMATH_EXPORTS|};
+		
+		\draw node[red,draw,fit=(maincpp)(b)] (exeframe) {};
+		\draw node[red,draw,fit=(mymathcpp)(a)(c)] (dllframe) {};
+		
+		\draw[red] (exeframe.south) node[below] {exe};
+		\draw[red] (dllframe.south) node[below] {dll};
+		
+		
+	\end{tikzpicture}
+	
+	\verb |MYMATH_API|  $\Rightarrow$ \verb|__declspec(dllimport)| в exe
+	
+	\verb |MYMATH_API|  $\Rightarrow$ \verb|__declspec(dllexport)| в dll
+	
+	
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Результат}
+	
+		\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=2,fontsize=\small, commandchars=\\\{\}, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}]
+			
+		PS ...>\color{orange} rm -r ./build/ -Force; cmake --build build/; cmake --build build/
+		...
+		Создается библиотека .../build/Debug/mymath.lib и объект  \color{red}lib!! о_О    
+		.../build/Debug/mymath.exp mymath.vcxproj -> .../build/Debug/mymath.dll
+		...
+		qe.vcxproj -> .../build/Debug/qe.exe
+		PS ...>\color{orange} ./build/Debug/qe.exe
+		\color{orange}1 -5 6
+		x1=3 x2=2x1 is not odd
+		\pause{}PS ...>\color{orange} mkdir new_folder
+		PS ...>\color{orange} cp ./build/Debug/qe.exe ./new_folder/
+		PS ...>\color{orange} ./new_folder/qe.exe
+		PS ...>\color{red}                        <== ничего не работает =(
+		\pause{}PS ...>\color{orange} cp ./build/Debug/mymath.dll ./new_folder/
+		PS ...>\color{orange} ./new_folder/qe.exe
+		\color{orange}1 -5 6
+		x1=3 x2=2x1 is not odd
+		
+		
+	\end{Verbatim}
+\end{frame}
 	
 \end{document}
