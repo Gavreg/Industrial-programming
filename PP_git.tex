@@ -1,0 +1,1744 @@
+\documentclass[9pt, aspectratio=1610]{beamer}
+%\documentclass{article}
+%\usepackage{beamerarticle}
+\mode<article>
+{
+	\usepackage[a4paper]{geometry}
+}
+
+
+
+\edef\tlCourse{Промышленное программирование}
+\edef\tlPartName{Модуль 1. Разработка модульных программ}
+\edef\tlPartNumber{1}
+\edef\tlThemeName{Системы контроля версий}
+\edef\tlThemeNumberLocal{3}
+\edef\tlThemeNumberGlobal{3}
+
+
+%\documentclass[10pt, handout]{beamer}
+%\setbeameroption{show notes}
+
+%\documentclass[10pt, a4paper]{article}
+%\usepackage{beamerarticle}
+
+\input{preambule.tex}
+
+\graphicspath{{Images/}{Images/\jobname/}}
+
+\date{\today}
+
+\renewcommand{\LectionNumber}{\tlThemeNumberGlobal}
+\renewcommand{\LectionTheme}{Тема \tlThemeNumberGlobal \\ \tlThemeName}
+\title{\LectionTheme}
+\subtitle{\tlCourse}
+
+
+\usepackage{fancyvrb}
+\usepackage{minted}
+
+
+\usetikzlibrary {shapes.geometric}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{trees}
+
+\tikzset{	bblock/.style 	= {draw, minimum width=8em, minimum height=2em, text height=1.5ex,text depth=0.25ex},
+	io/.style 		= {bblock, trapezium, trapezium left angle=70, trapezium right angle=110},
+	op/.style 		= {bblock, rectangle}, 
+	if/.style		= {bblock, diamond},
+	terminator/.style		= {bblock, rounded rectangle},
+	portal/.style 	={bblock,circle,minimum size=3em},
+}
+
+\usepackage{cancel}
+
+% Source - https://tex.stackexchange.com/a/23094
+% Posted by egreg
+% Retrieved 2026-02-16, License - CC BY-SA 3.0
+
+\newcommand*{\fvtextcolor}[2]{\textcolor{#1}{#2}}
+\newcommand*{\tc}[2]{\textcolor{#1}{#2}}
+
+\DefineVerbatimEnvironment{VerbatimCmd}{Verbatim}{
+	bgcolor=black,
+	tabsize=4,
+	formatcom=\color{white},
+	gobble=2,
+	fontsize=\small,
+	commandchars=!\{\},
+	xleftmargin=0em,
+	frame=single,
+	framerule=0pt,
+	rulecolor=\color{red},
+	framesep=1em,
+	fillcolor=\color{black}
+}
+
+
+\begin{document}
+	 
+	\mode<presentation>
+	{
+		\input{template.tex}	
+	}
+	
+	
+
+
+\if 0  %====================================================================================
+
+\fi %==========================================================================
+
+
+\QRFRAME
+	
+
+	
+\mode<presentation>
+{	
+	
+		\frame{\maketitle}
+		
+		\begin{frame}\frametitle{План лекции}			
+			\tableofcontents
+		\end{frame}
+
+	
+}
+
+
+
+\mode<article>
+{
+	\begin{center}
+		
+		\Large
+		
+		\title
+		
+		\LectionTheme
+	\end{center}
+}
+	
+
+
+\begin{frame}[fragile]\frametitle{git}
+	
+	\begin{alertblock}{git ---}
+		это распределенная система контроля версий, разработанная Линусом Торвальдсом в 2005 году для управления исходным кодом ядра Linux.
+	\end{alertblock}
+	
+	Предназначение:
+	
+	\begin{itemize}
+		\item Отслеживание изменений в файлах
+		\item Совместная работа над проектами
+		\item Возможность возврата к предыдущим версиям
+	\end{itemize}
+	
+	Установка Windows (через актуальную(!!) версию Windows Installer):
+	
+	\begin{VerbatimCmd}[]
+				
+		> !color{orange}winget install Git.Git		
+			
+	\end{VerbatimCmd}
+	
+	Установка Linux (через apt):
+	
+	\begin{VerbatimCmd}[commandchars=!\{\},gobble=2]
+				
+		> !color{orange}sudo apt update
+		> !color{orange}sudo apt install git	
+					
+	\end{VerbatimCmd}
+	
+	Установка Mac (через Homebrew):
+	
+	\begin{VerbatimCmd}[commandchars=!\{\},gobble=2]
+		
+		> !color{orange}brew install git	
+		
+	\end{VerbatimCmd}
+	
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Работа через командную строку}
+	
+	\textbf{Проверка установки}
+	\begin{VerbatimCmd}
+		
+		> !color{orange}git --version
+		git version 2.48.1.windows.1
+		
+	\end{VerbatimCmd}
+	
+	\medskip
+	
+	
+	\textbf{Основной синтаксис}
+	
+		
+	\smallskip
+	
+	\hfill\begin{tikzpicture}
+		[
+			code/.style = {draw, font=\ttfamily\Huge}
+		]
+		
+		
+		\draw node [code] (git) {git\strut};
+		\draw node [code, right = 1em of git] (commit) {commit\strut};
+		\draw node [code, right = 1em of commit] (arg) {-m "message"\strut};
+		
+		\draw (git) -- +(up:1) node[above] {Вызов программы git};
+		\draw (commit) -- +(down:1) node[below] {команда};
+		\draw (arg) -- +(up:1) node[above] {аргументы};
+		
+		\draw node [code,draw=none, left = 1em of git]  {>\strut};
+		
+	\end{tikzpicture}\hfill\hspace{0pt}
+	
+	
+	\smallskip
+	
+	\textbf{Получить справку по любой команде git}
+	
+	\begin{VerbatimCmd}
+		
+		> !color{orange}git команда --help !color{gray} #Полная онлайн справка
+		> !color{orange}git команда -h !color{gray} #Сокращённая, в терминале
+				
+	\end{VerbatimCmd}
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Настройка git}
+	
+	\begin{alertblock}{\Verb|git config|}
+	  позволяет задавать настройки git на уровне системы или отдельного репозитория.
+		
+	\end{alertblock}
+	
+	\smallskip
+
+	\textbf{Настройка имени пользователя и эл. почты на уровне системы}
+	\begin{VerbatimCmd}
+		
+		> !color{orange}git config --global user.name "gavreg"
+		> !color{orange}git config --global user.email "a.gavrilov@stankin.ru"
+		
+		> !color{orange}git config --global --list
+		...
+		user.email=a.gavrilov@stankin.ru
+		user.name=gavreg
+		...		
+	\end{VerbatimCmd}
+	
+	\smallskip
+	
+	\begin{VerbatimCmd}
+		
+		> !color{orange}git config --global my.var "СТАНКИН"
+		> !color{orange}git config --global --list
+		...
+		my.var=Станкин
+		...
+		
+	\end{VerbatimCmd}
+	
+		
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Первый коммит}
+	
+	
+		
+	\begin{minipage}[t][\paperheight-3cm][b]{0.3\linewidth}
+		\begin{tikzpicture}[
+			commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+			committext/.style = {font=\ttfamily},
+			info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+			]
+			%\draw (0,0) grid (4,7.5);
+			\clip (0,0) rectangle (4,7.5);
+			
+			\begin{onlyenv}< 5- >
+				
+				\draw (2,0.5) node[commit] (127e) {} 
+					(127e) node[committext] {127e} 
+					(127e.0) node[info, right] {HEAD\\master};
+			
+			\end{onlyenv}			
+			
+		\end{tikzpicture}
+	\end{minipage}\hfill%
+	\begin{minipage}[t][\paperheight-3cm][t]{0.68\linewidth}
+			
+		\begin{minipage}[t][5.2cm][t]{\linewidth}		
+			
+			\begin{onlyenv}< 1-2 >%
+				1. Создадим файл ch1.txt
+				\begin{block}{ch1.txt(версия 1)}
+					Вечерело, на улице было холодно.
+				\end{block}
+			\end{onlyenv}%			
+			\begin{onlyenv}< 2-2 >%
+				2. Инициализация репозитория
+				
+				\begin{VerbatimCmd}[gobble=5]
+					
+					> !color{orange} git init
+					
+				\end{VerbatimCmd}
+				
+				\begin{alertblock}{\Verb|git init|} \small
+					команда инициализации репозитория. В текущей папке создаться скрытая папка .git, в которой будет размещён новый пустой репозиторий.
+				\end{alertblock}
+			\end{onlyenv}%			
+			\begin{onlyenv}<3>%
+				
+				3. Добавим файл ch1.txt в индекс.
+				
+				\begin{alertblock}{\Verb|git add| ---}
+					команда Git, осуществляющая добавление файлов в индекс (stage).
+				\end{alertblock}
+				
+				\begin{VerbatimCmd}[gobble=5,fontsize=\small]
+					
+					> !color{orange}git add ch1.txt 
+					> !color{orange}git status
+					
+					Changes to be committed:
+					  (use "git rm --cached <file>..." to unstage)
+						!color{green}new file:   ch1.txt					
+					
+				\end{VerbatimCmd}
+								
+			\end{onlyenv}%			
+			\begin{onlyenv}<4>%
+				4. Применяем (фиксируем) изменения.
+				
+				\begin{alertblock}{Фиксация изменений (commit changes) --- }
+				процедура переноса файлов из индекса в репозиторий. Перенос осуществляется хитро --- переносятся только отличия файлов индекса относительно тех, что есть в репозитории.		
+				\end{alertblock}
+				
+				\begin{alertblock}{Коммит (commit) --- }
+					содержит описание изменений файлов текущей версии проекта относительно предыдущей. Любой коммит, кроме самого первого, основан на более раннем (родительском).   		
+				\end{alertblock}
+				
+			\end{onlyenv}%			
+			\begin{onlyenv}<5>%
+				4. Применяем (фиксируем) изменения.
+					
+				\begin{alertblock}{\Verb|git commit|}
+					создаёт новый коммит, перенося в репозиторий то, что хранится в индексе в индексе. 
+				\end{alertblock}
+				
+				\begin{VerbatimCmd}[gobble=5]
+					
+					> !color{orange}git commit -m "Мой первый коммит"	
+					[master (root-commit) !colorbox{yellow}{!color{black}127e}c2c] Мой первый коммит
+					1 file changed, 1 insertion(+)
+					create mode 100644 ch1.txt
+					
+				\end{VerbatimCmd}
+								
+			\end{onlyenv}%
+			
+		\end{minipage}\\
+		\begin{minipage}[t][3cm][t]{\linewidth}
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Папка\strut}  %ПАПКА
+					
+					\begin{onlyenv}<1>
+						\strut +ch1.txt(1)
+					\end{onlyenv}
+					
+					\begin{onlyenv}<2->
+						\strut ch1.txt(1)\rememb{a}
+					\end{onlyenv}
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Индекс\strut}    %Индекс
+					
+					\begin{onlyenv}<3-5>
+						\strut \rememb{b}ch1.txt(1)\rememb{c}
+					\end{onlyenv}%
+					\only<3>{\tikz[remember picture, overlay]{\draw[-Latex,red,very thick](a)--(b);}}
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Репозиторий\strut}      %репа
+					
+					\begin{onlyenv}<5->
+						\strut \rememb{d}ch1.txt(1)\tikz[remember picture, overlay]{\draw[-Latex,red,very thick](c)--(d);}
+					\end{onlyenv}	
+									
+				\end{exampleblock}
+			\end{minipage}\hfill%		
+		\end{minipage}		
+			
+	\end{minipage}
+
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Второй коммит}
+	
+	
+	
+	\begin{minipage}[t][\paperheight-3cm][b]{0.3\linewidth}
+		\begin{tikzpicture}[
+			commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+			committext/.style = {font=\ttfamily},
+			info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+			]
+			%\draw (0,0) grid (4,7.5);
+			\clip (0,0) rectangle (4,7.5);
+			
+			\begin{onlyenv}< 1- >
+				
+				\draw (2,0.5) node[commit] (127e) {} 
+				(127e) node[committext] {127e}; 
+				
+				\only<1-2>{\draw (127e.0) node[info, right] {HEAD\\master};}
+				
+				
+			\end{onlyenv}	
+			
+			\begin{onlyenv}< 3- >
+				
+				\draw (127e) ++(up:1.5) node[commit] (6829) {} 
+				(6829) node[committext] {6829} 
+				(6829.0) node[info, right] {HEAD\\master};
+				
+				\draw [->] (127e) -- (6829);
+				
+				\only<3>{\draw (127e.0) node[info, gray, right] {HEAD\\master};} %серый старый указатель
+				\only<3->{\draw (6829.0) node[info, right] {HEAD\\master};}
+				
+			\end{onlyenv}				
+			
+		\end{tikzpicture}
+	\end{minipage}\hfill%
+	\begin{minipage}[t][\paperheight-3cm][t]{0.68\linewidth}
+		
+		\begin{minipage}[t][5.2cm][t]{\linewidth}		
+			
+			\begin{onlyenv}< 1 >%
+				1. Изменим  файл ch1.txt
+				\begin{block}{ch1.txt(версия 2)}
+					Вечерело, на улице было \cancel{холодно} жарко.
+				\end{block}
+				
+				Создадим файл ch2.txt
+				\begin{block}{ch2.txt(версия 1)}
+					Однажды, в студёную зимнюю пору я из лесу вышел.
+				\end{block}
+				
+				\Verb|git add ch1.txt ch2.txt| --- добавить эти файлы в индекс\\
+				\Verb|git add *.txt| --- добавить всe txt файлы в индекс\\
+				\Verb|git add -u| --- добавить всe отслеживаемые (те что уже в индексе) файлы в индекс
+				
+			\end{onlyenv}%	
+			
+			\begin{onlyenv}<2>
+				2. Обновим индекс
+				
+				\begin{VerbatimCmd}[gobble=5]
+					
+					> !color{orange}git add ch1.txt ch2.txt
+					> !color{orange}git status
+					On branch master
+					Changes to be committed:
+					(use "git restore --staged <file>..." to unstage)
+						!color{green}modified:   ch1.txt
+						!color{green}new file:   ch2.txt
+					
+				\end{VerbatimCmd}
+			\end{onlyenv}
+			
+			\begin{onlyenv}<3>
+				3. Создаем коммит
+				
+				\begin{VerbatimCmd}[gobble=5]
+					
+					> !color{orange}git commit -m "Второй коммит"    
+					[master 68297fe] Второй коммит
+					
+				\end{VerbatimCmd}
+			\end{onlyenv}	
+				
+		\end{minipage}\\
+		\begin{minipage}[t][3cm][t]{\linewidth}
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Папка\strut}  %ПАПКА
+					
+					\begin{onlyenv}<1>
+						\strut ch1.txt(1$\to$2)
+						\strut +ch2.txt(1)
+					\end{onlyenv}
+					
+					\begin{onlyenv}<2->
+						\strut ch1.txt(2)\rememb{a}
+						\strut ch2.txt(1)\rememb{b}
+					\end{onlyenv}
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Индекс\strut}    %Индекс
+					
+					\begin{onlyenv}<1>
+						\strut ch1.txt(1)
+					\end{onlyenv}%
+					\begin{onlyenv}<2>
+						\rememb{a1}\strut ch1.txt(2)
+						\rememb{b1}\strut ch2.txt(1)%
+						\tikz[remember picture,overlay]{\draw[-Latex,thick,red](a)--(a1); \draw[-Latex,thick,red](b)--(b1);}
+					\end{onlyenv}%
+					\begin{onlyenv}<3>
+						\strut ch1.txt(2)\rememb{a}
+						\strut ch2.txt(1)\rememb{b}%
+						
+					\end{onlyenv}%
+				
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Репозиторий\strut}      %репа
+					
+					\begin{onlyenv}<1-2>
+						\strut ch1.txt(1)   
+					\end{onlyenv}
+					\begin{onlyenv}<3>
+						\rememb{a1}\strut ch1.txt(2)
+						\rememb{b1}\strut ch2.txt(1)\tikz[remember picture,overlay]{\draw[-Latex,thick,red](a)--(a1); \draw[-Latex,thick,red](b)--(b1);}
+					\end{onlyenv}
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%		
+		\end{minipage}		
+		
+	\end{minipage}
+	
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Просмотр истории}
+	
+	
+	
+	\begin{minipage}[t][\paperheight-3cm][b]{0.3\linewidth}
+		\begin{tikzpicture}[
+			commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+			committext/.style = {font=\ttfamily},
+			info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+			]
+			%\draw (0,0) grid (4,7.5);
+			\clip (0,0) rectangle (4,7.5);
+			
+			\begin{onlyenv}< 1- >
+				
+				\draw (2,0.5) node[commit] (127e) {} 
+				(127e) node[committext] {127e}; 
+				
+				\draw (2,1.5) node[commit] (6829) {} 
+				(6829) node[committext] {6829};
+				
+				\draw [->] (127e) -- (6829);
+				
+				\only<1>{\draw (6829.0) node[info, right] {HEAD\\master};}
+				
+				
+			\end{onlyenv}	
+			
+			\begin{onlyenv}< 2- >
+				
+				\draw (2,2.5) node[commit] (4bd4) {} 
+				(4bd4) node[committext] {4bd4}; 
+				
+				\draw [->] (6829) -- (4bd4);
+				
+				\only<2->{\draw (4bd4.0) node[info, right] {HEAD\\master};}
+				\only<2>{\draw (6829.0) node[info,gray, right] {HEAD\\master};}
+				
+			\end{onlyenv}
+			
+			
+		\end{tikzpicture}
+	\end{minipage}\hfill%
+	\begin{minipage}[t][\paperheight-3cm][t]{0.68\linewidth}
+		
+		\begin{minipage}[t][5.2cm][t]{\linewidth}		
+			
+			\begin{onlyenv}< 1 >%
+				1. Изменим  файл ch1.txt
+				\begin{block}{ch1.txt(версия 3)}
+					Вечерело, на улице \cancel{было жарко} шёл дождь.
+				\end{block}
+				
+				Изменим файл ch2.txt
+				\begin{block}{ch2.txt(версия 2)}
+					Однажды, в студёную зимнюю пору\\ 
+					Я из лесу вышел; был сильный мороз.
+				\end{block}
+			\end{onlyenv}	
+			
+			\begin{onlyenv}<2>
+				2. Сразу закоммитим изменения
+				
+				\begin{VerbatimCmd}[gobble=5]
+					
+					> !color{orange}git commit -am "Коммит номер три"
+					[master 4bd412d] Коммит номер три
+					2 files changed, 3 insertions(+), 2 deletions(-)
+					
+				\end{VerbatimCmd}
+			\end{onlyenv}
+			
+			\begin{onlyenv}<3>
+				3. Посмотрим лог \hypertarget{ref:tolog}{text}
+				
+				\begin{alertblock}{\Verb|git log| ---}
+					 основная команда в Git для просмотра истории коммитов (фиксаций изменений) в репозитории.
+				\end{alertblock}
+				
+					\begin{VerbatimCmd}[gobble=5,fontsize=\footnotesize]
+					
+					
+					> !color{orange}git log
+					commit 4bd412d5bfbeb8546f9e383ee6319802d7c2bee3 (HEAD -> master)
+					Author: gavreg <a.gavrilov@stankin.ru>
+					Date:   Thu Mar 19 00:12:14 2026 +0300
+					...
+					
+				\end{VerbatimCmd}
+				
+				\hyperlink{f:log}{Полный лог}
+
+			\end{onlyenv}
+				
+			
+		\end{minipage}\\
+		\begin{minipage}[t][3cm][t]{\linewidth}
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Папка\strut}  %ПАПКА
+					
+					\begin{onlyenv}<1>
+						\strut ch1.txt(2$\to$3)
+						\strut ch2.txt(1$\to$2)
+					\end{onlyenv}
+					
+					\begin{onlyenv}<2->
+						\strut ch1.txt(3)\rememb{a}
+						\strut ch2.txt(2)\rememb{b}
+					\end{onlyenv}
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Индекс\strut}    %Индекс
+					
+					
+					\begin{onlyenv}<1>
+						\strut ch1.txt(2)
+						\strut ch2.txt(1)%
+						
+					\end{onlyenv}%
+					
+					\begin{onlyenv}<2->
+						\rememb{a1}\strut ch1.txt(3)\rememb{a2}
+						\rememb{b1}\strut ch2.txt(2)\rememb{b2}%
+						
+					\end{onlyenv}%
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Репозиторий\strut}      %репа
+					
+					\begin{onlyenv}<1>
+						\strut ch1.txt(2)
+						\strut ch2.txt(1)
+					\end{onlyenv}
+					
+					\begin{onlyenv}<2->
+						\rememb{a3}\strut ch1.txt(3)
+						\rememb{b3}\strut ch2.txt(2)%
+						\only<2>{\tikz[remember picture,overlay]{%
+							\draw[-Latex,thick,red](a)--(a1);%
+							\draw[-Latex,thick,red](b)--(b1);%
+							\draw[-Latex,thick,red](a2)--(a3);%
+							\draw[-Latex,thick,red](b2)--(b3);}}%
+					\end{onlyenv}
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%		
+		\end{minipage}		
+		
+	\end{minipage}
+	
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Просмотр коммита}
+	
+	
+	
+	\begin{minipage}[t][\paperheight-3cm][b]{0.3\linewidth}
+		\begin{tikzpicture}[
+			commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+			committext/.style = {font=\ttfamily},
+			info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+			]
+			%\draw (0,0) grid (4,7.5);
+			\clip (0,0) rectangle (4,7.5);
+			
+			\begin{onlyenv}< 1- >
+				
+				\draw (2,0.5) node[commit] (127e) {} 
+				(127e) node[committext] {127e}; 
+				
+				\draw (2,1.5) node[commit] (6829) {} 
+				(6829) node[committext] {6829};
+				
+				\draw [->] (127e) -- (6829);
+					
+				\draw (2,2.5) node[commit] (4bd4) {} 
+				(4bd4) node[committext] {4bd4}; 
+				
+				\draw [->] (6829) -- (4bd4);
+				
+				\only<1->{\draw (4bd4.0) node[info, right] {HEAD\\master};}			
+				
+			\end{onlyenv}	
+			
+
+			
+			
+		\end{tikzpicture}
+	\end{minipage}\hfill%
+	\begin{minipage}[t][\paperheight-3cm][t]{0.68\linewidth}
+		
+		\begin{minipage}[t][5.2cm][t]{\linewidth}		
+			
+			\begin{onlyenv}< 1 >%
+				Просмотр коммита
+				
+				\begin{alertblock}{\Verb|git show| --- }
+					это команда Git, предназначенная для детального просмотра информации об объектах (коммитах, тегах, файлах) в удобном для чтения формате. 
+				\end{alertblock}
+				
+				Самый частый вариант синтаксиса:
+				
+				\Verb|git show объект|
+				
+				Объектом может являться практически любая сущность git.
+				
+				Коммит может определятся хешем, именем (или веткой), тегом.					
+			\end{onlyenv}	
+			
+			\begin{onlyenv}< 2 >%
+				Адресация коммитов:\hypertarget{f:show_back}{ }
+				
+				\begin{itemize} 
+					\item По хешу\\
+						\Verb|git show 127e| \hyperlink{f:show1}{Пример}\\
+						\Verb|git show 6829| \hyperlink{f:show2}{Пример}\\
+						\Verb|git show 4db4| \hyperlink{f:show3}{Пример}
+					\item По ветке или тегу\\
+						\Verb|git show master|\\
+					\item По специальному указателю\\
+						\Verb|git show HEAD| == \Verb|git show @|\\
+					\item Выражения вида <<коммит${}\sim{}n$>>, $n\in\mathbb N$
+					\Verb|git show @~2|~--- 2 шага до HEAD\\
+					\Verb|git show 6829~1|~--- 1 шаг д 6829\\
+					и.т.д.
+				\end{itemize}
+				
+					
+			\end{onlyenv}	
+			
+		\end{minipage}\\
+		\begin{minipage}[t][3cm][t]{\linewidth}
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Папка\strut}  %ПАПКА
+					
+					\begin{onlyenv}<1->
+						\strut ch1.txt(3)\rememb{a}
+						\strut ch2.txt(2)\rememb{b}
+					\end{onlyenv}
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Индекс\strut}    %Индекс
+					
+					
+					\begin{onlyenv}<1->
+						\strut ch1.txt(3)
+						\strut ch2.txt(2)
+						
+					\end{onlyenv}%
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Репозиторий\strut}      %репа
+					
+					\begin{onlyenv}<1->
+						\rememb{a3}\strut ch1.txt(3)
+						\rememb{b3}\strut ch2.txt(2)%
+					\end{onlyenv}
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%		
+		\end{minipage}		
+		
+	\end{minipage}
+	
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Сброс репозитория}
+	
+	
+	
+	\begin{minipage}[t][\paperheight-3cm][b]{0.3\linewidth}
+		\begin{tikzpicture}[
+			commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+			committext/.style = {font=\ttfamily},
+			info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+			]
+			%\draw (0,0) grid (4,7.5);
+			\clip (0,0) rectangle (4,7.5);
+			
+			\begin{onlyenv}< 1- >
+				
+				\draw (2,0.5) node[commit] (127e) {} 
+				(127e) node[committext] {127e}; 
+				
+				\draw (2,1.5) node[commit] (6829) {} 
+				(6829) node[committext] {6829};
+				
+				\draw [->] (127e) -- (6829);
+				
+				\draw (2,2.5) node[commit] (4bd4) {} 
+				(4bd4) node[committext] {4bd4}; 
+				
+				\draw [->] (6829) -- (4bd4);
+				
+				\only<1->{\draw (4bd4.0) node[info, right] {HEAD\\master};}			
+				
+			\end{onlyenv}	
+			
+			
+			
+			
+		\end{tikzpicture}
+	\end{minipage}\hfill%
+	\begin{minipage}[t][\paperheight-3cm][t]{0.68\linewidth}
+		
+		\begin{minipage}[t][5.2cm][t]{\linewidth}		
+			
+			\begin{onlyenv}< 1 >%
+				Просмотр коммита
+				
+				\begin{alertblock}{\Verb|git reset| --- }
+					это команда Git, предназначенная для детального просмотра информации об объектах (коммитах, тегах, файлах) в удобном для чтения формате. 
+				\end{alertblock}
+				
+				Самый частый вариант синтаксиса:
+				
+				\Verb|git show объект|
+				
+				Объектом может являться практически любая сущность git.
+				
+				Коммит может определятся хешем, именем (или веткой), тегом.					
+			\end{onlyenv}	
+			
+			
+		\end{minipage}\\
+		\begin{minipage}[t][3cm][t]{\linewidth}
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Папка\strut}  %ПАПКА
+					
+					\begin{onlyenv}<1->
+						\strut ch1.txt(3)\rememb{a}
+						\strut ch2.txt(2)\rememb{b}
+					\end{onlyenv}
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Индекс\strut}    %Индекс
+					
+					
+					\begin{onlyenv}<1->
+						\strut ch1.txt(3)
+						\strut ch2.txt(2)
+						
+					\end{onlyenv}%
+					
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%
+			\begin{minipage}[t]{0.29\linewidth}
+				\begin{exampleblock}{Репозиторий\strut}      %репа
+					
+					\begin{onlyenv}<1->
+						\rememb{a3}\strut ch1.txt(3)
+						\rememb{b3}\strut ch2.txt(2)%
+					\end{onlyenv}
+					
+				\end{exampleblock}
+			\end{minipage}\hfill%		
+		\end{minipage}		
+		
+	\end{minipage}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Ветки. Основные операции и команды}
+	
+	
+	\begin{overlayarea}{\textwidth}{0.65\textheight} %
+		
+	\begin{onlyenv}<1>
+		
+		\begin{alertblock}{Ветка (branch) ---}
+		легковесный подвижный указатель на конкретный коммит в истории разработки. Она представляет собой изолированную линию разработки, позволяющую вести работу параллельно с другими линиями без влияния на них.
+		\end{alertblock}	
+		
+		\begin{alertblock}{\Verb|git branch| ---}
+			команда для управления ветками в Git. Позволяет создавать, просматривать, переименовывать и удалять ветки, но не переключается между ними.
+		\end{alertblock}
+		
+		\begin{alertblock}{\Verb|git checkout| ---}
+			git checkout — многофункциональная команда для: переключения между ветками, восстановления файлов, перемещения по истории коммитов					
+		\end{alertblock}	
+		
+	\end{onlyenv}
+	
+	\begin{onlyenv}<2>
+		
+		\begin{alertblock}{Слияние веток --- }
+			процесс объединения изменений из двух разных веток в одну. В системе Git это один из ключевых механизмов, позволяющий работать над новыми функциями, исправлениями или экспериментами изолированно, а затем интегрировать результат в основную линию разработки.
+		\end{alertblock}
+		
+		\begin{alertblock}{git merge --- }
+			используется для того, чтобы взять изменения из одной или нескольких веток и интегрировать их в текущую активную ветку.
+		\end{alertblock}
+		
+	\end{onlyenv}
+	
+	\end{overlayarea}
+	
+	\centering
+	
+	\begin{tikzpicture}[
+		commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+		committext/.style = {font=\ttfamily},
+		info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+		]
+		%\draw (0,0) grid (4,7.5);
+		%\clip (0,0) rectangle (4,7.5);
+		
+		\draw (0,0) node[commit] (c1) {} 
+		(c1) node[committext] {c1}; 
+		
+		\draw (2,0) node[commit] (c2) {} 
+		(c2) node[committext] {c2}; 
+		
+		\draw (4,0) node[commit] (c3) {} 
+		(c3) node[committext] {с3}; 
+		
+		\draw[->] (c1) -- (c2);
+		\draw[->] (c2) -- (c3);
+		
+		\draw (6,1) node[commit] (c4) {}
+		node[committext] {c4};
+		
+		\draw (8,1) node[commit] (c5) {}
+		node[committext] {c5};
+		
+		
+		\draw[->] (c3) -- (c4);
+		\draw[->] (c4) -- (c5);
+		
+		\draw (6,0) node[commit] (c6) {} 
+		(c6) node[committext] {с6} ; 
+		
+		\draw [->] (c3) -- (c6);
+		
+		\node[info, above=0pt of c5] {feature};
+		
+		\begin{onlyenv}<1>			
+			\node[info, below=0pt of c6] {master};
+		\end{onlyenv}
+		
+		\begin{uncoverenv}<2>
+			\draw (10,0) node[commit] (c7) {}
+			node[committext]{c7};
+			
+			\node[info, below=0pt of c7] {master};
+			
+			\draw[->] (c6) -- (c7);
+			\draw[->] (c5) -- (c7);
+		\end{uncoverenv}
+		
+	\end{tikzpicture}
+	
+\end{frame}
+
+\begin{frame}\frametitle{Наименования веток}
+	
+	
+	 
+	\begin{columns}[]
+		\edef\colA{0.35}
+		\begin{column}[t]{\colA\linewidth}
+			%Колнка1
+			Как называть ветки:
+			
+			\begin{enumerate}
+				\item Избегайте заглавных для единообразия.
+				\item Не используйте пробелы.
+				\item Название должно отражать суть:  \cancel{fix} fix-login-bug.
+				\item Только буквы, цифры, дефисы, подчёркивания, слеши.
+				\item Не начинайте с дефиса.
+			\end{enumerate}
+		\end{column}
+		\begin{column}[t]{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			Типовые префиксы:
+			\begin{itemize}
+				\item feature/ ---	новая функциональность;	
+				\item bugfix/ ---	исправление ошибки;	
+				\item hotfix/ ---	критическое исправление в production;
+				\item release/ ---	подготовка релиза;	
+				\item refactor/	--- рефакторинг кода;	
+				\item docs/ ---	обновление документации;	
+				\item test/	--- добавление или изменение тестов;
+				\item chore/ --- обслуживание проекта (зависимости, конфиги);	
+				\item experiment/ --- Экспериментальные изменения;	
+				\item wip/ --- work in progress — незавершённая работа;
+			\end{itemize}
+				
+		\end{column}
+	\end{columns}
+	
+
+	
+\end{frame}
+
+
+\begin{frame}[t,fragile]\frametitle{Создание веток}
+	
+	\begin{columns}[onlytextwidth]
+		\edef\colA{0.3}
+		\begin{column}[T]{\colA\linewidth}
+			%Колнка1
+			 \begin{tikzpicture}[
+				commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+				committext/.style = {font=\ttfamily},
+				info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+				]
+				\clip (0,0) rectangle (4,7.5);
+				
+				%\draw (0,0) grid (4,7.5);
+				
+				
+				\begin{onlyenv}< 1- >
+					
+					\draw (2,0.5) node[commit] (127e) {} 
+					(127e) node[committext] {127e}; 
+					
+					\draw (2,1.5) node[commit] (6829) {} 
+					(6829) node[committext] {6829};
+					
+					\draw [->] (127e) -- (6829);
+					
+					\draw (2,2.5) node[commit] (4bd4) {} 
+					(4bd4) node[committext] {4bd4}; 
+					
+					\draw [->] (6829) -- (4bd4);	
+					
+			
+					
+					
+				\end{onlyenv}		
+				
+				\begin{onlyenv}<1>
+					\draw (4bd4.0) node[info, right] {@master};
+				\end{onlyenv}
+				
+				\begin{onlyenv}<2>
+					\draw (4bd4.0) node[info, above right] {\textcolor{gray}{@}master};
+					\draw (4bd4.0) node[info, below right] {@wip};
+				\end{onlyenv}
+				
+				\begin{onlyenv}<3->
+					
+					\draw (1,3.5) node[commit] (8e96) {} 
+					(8e96) node[committext] {8e96}; 
+					
+					\draw (4bd4.0) node[info, right] {master};
+					
+					\draw (8e96.south west) node[info, below] {@wip};
+					
+					\draw[->] (4bd4) -- (8e96) ;	
+					
+				\end{onlyenv}
+			
+			\end{tikzpicture}
+			
+			
+		\end{column}
+		\begin{column}[T]{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			
+			\begin{minipage}[t][5.2cm][t]{\textwidth}		
+				
+				\begin{onlyenv}<1>
+					Изменим репозиторий
+					
+					\begin{block}{ch1.txt (Версия 3 $\to$ 4)}
+						\mbox{\cancel{Вечерело}} Наступило утро, на улице шёл дождь.
+					\end{block}
+					
+					\begin{block}{ch2.txt(версия 2)}
+						Однажды, в студёную зимнюю пору\\ 
+						Я из лесу вышел; был сильный мороз.
+					\end{block}
+				\end{onlyenv}
+				
+				\begin{onlyenv}<2>					
+					
+					Создадим ветку
+					
+					\begin{alertblock}{\Verb|git checkout -b имя_ветки| ---}
+						создаёт на текущем коммите (HEAD) новую ветку и переключает на неё HEAD.
+					\end{alertblock}
+					
+					\begin{alertblock}{\Verb|git branch имя_ветки| ---}
+						создаёт на текущем коммите новую ветку, но \textbf{не переключает} на неё HEAD.
+					\end{alertblock}\smallskip
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange}git checkout -b wip
+						
+					\end{VerbatimCmd}
+					
+				\end{onlyenv}
+				
+				\begin{onlyenv}<3>					
+					
+					Закоммитим в ветку
+					
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange}git commit -am "Перефразировал первую главу"
+						
+						PS > !color{orange}git log
+						
+						!color{yellow} commit 8e965b9.... (HEAD -> wip)
+						...						
+						Перефразировал первую главу
+						
+						!color{yellow} commit 4bd412d5b.... (master)
+						...						
+						Коммит номер три!
+						...
+						
+					\end{VerbatimCmd}
+					
+				\end{onlyenv}
+				
+				\begin{onlyenv}<4>
+					Просмотр веток
+					
+					\begin{VerbatimCmd}[gobble=5]
+						
+						PS > !color{orange}git branch
+						master
+						!color{green}* wip
+						 
+					\end{VerbatimCmd}
+					
+					\begin{VerbatimCmd}[gobble=5]
+						
+						PS > !color{orange} git show-branch
+						! [master] Коммит номер три!
+						* [wip] Перефразировал первую главу
+						--
+						* [wip] Перефразировал первую главу
+						+* [master] Коммит номер три!
+						PS C:\Users\gavre\Desktop\Новая папка (6)> 
+						
+					\end{VerbatimCmd}
+					
+				\end{onlyenv}
+				
+
+				
+			\end{minipage}\\
+			\begin{minipage}[t][3cm][t]{\linewidth}
+				\begin{minipage}[t]{0.29\linewidth}
+					\begin{exampleblock}{Папка\strut}  %ПАПКА
+						
+						\begin{onlyenv}<1>
+							\strut ch1.txt(3 $\to$ 4)
+							\strut ch2.txt(2)
+						\end{onlyenv}
+						
+						\begin{onlyenv}<2->
+							\strut ch1.txt(4)\rememb{a1}
+							\strut ch2.txt(2)\rememb{b1}
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Индекс\strut}    %Индекс
+						
+						
+						\begin{onlyenv}<1-2>
+							\strut ch1.txt(3)
+							\strut ch2.txt(2)
+							
+						\end{onlyenv}%
+						
+						\begin{onlyenv}<3->
+							\rememb{a2}\strut ch1.txt(4)\rememb{a3}
+							\rememb{b2}\strut ch2.txt(2)\rememb{b3}
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Репозиторий\strut}      %репа
+						
+						\begin{onlyenv}<1-2>
+							\strut ch1.txt(4)
+							\strut ch2.txt(2)
+						\end{onlyenv}
+						
+						\begin{onlyenv}<3->
+							\rememb{a4}\strut ch1.txt(4)
+							\rememb{b4}\strut ch2.txt(2)
+						\end{onlyenv}
+						\begin{onlyenv}<3>
+							\begin{tikzpicture}[remember picture,overlay]
+								\draw [-Latex, thick, red] (a1)--(a2);
+								\draw [-Latex, thick, red] (a3)--(a4);
+								\draw [-Latex, thick, red] (b1)--(b2);
+								\draw [-Latex, thick, red] (b3)--(b4);
+							\end{tikzpicture}
+						\end{onlyenv}
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%		
+			\end{minipage}		
+			
+		\end{column}
+	\end{columns}
+	
+	
+
+	
+\end{frame}
+
+
+\begin{frame}[t,fragile]\frametitle{Просмотр содержимого коммитов}
+	
+	\begin{columns}[onlytextwidth]
+		\edef\colA{0.3}
+		\begin{column}[T]{\colA\linewidth}
+			%Колнка1
+			\begin{tikzpicture}[
+				commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+				committext/.style = {font=\ttfamily},
+				info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+				]
+				\clip (0,0) rectangle (4,7.5);
+				
+				%\draw (0,0) grid (4РУФВ,7.5);
+				
+				
+				\begin{onlyenv}< 1- >
+					
+					\draw (2,0.5) node[commit] (127e) {} 
+					(127e) node[committext] {127e}; 
+					
+					\draw (2,1.5) node[commit] (6829) {} 
+					(6829) node[committext] {6829};
+					
+					\draw [->] (127e) -- (6829);
+					
+					\draw (2,2.5) node[commit] (4bd4) {} 
+					(4bd4) node[committext] {4bd4}; 
+					
+					\draw [->] (6829) -- (4bd4);	
+					
+					
+					\draw (1,3.5) node[commit] (8e96) {} 
+					(8e96) node[committext] {8e96}; 
+					
+					\draw (4bd4.0) node[info, right] {master};
+					
+					\draw (8e96.south west) node[info, below] {@wip};
+					
+					\draw[->] (4bd4) -- (8e96) ;	
+					
+				\end{onlyenv}
+				
+			\end{tikzpicture}
+			
+			
+		\end{column}
+		\begin{column}[T]{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			
+			\begin{minipage}[t][5.2cm][t]{\textwidth}		
+				
+				\begin{alertblock}{\Verb|HEAD (@)| ---}
+					специальный указатель на коммит, на котором находится репозиторий. 
+				\end{alertblock}
+				
+				
+				
+				
+				
+			\end{minipage}\\
+			\begin{minipage}[t][3cm][t]{\linewidth}
+				\begin{minipage}[t]{0.29\linewidth}
+					\begin{exampleblock}{Папка\strut}  %ПАПКА
+						
+
+						
+						\begin{onlyenv}<1->
+							\strut ch1.txt(4)\rememb{a1}
+							\strut ch2.txt(2)\rememb{b1}
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Индекс\strut}    %Индекс
+						
+11
+						
+						\begin{onlyenv}<1->
+							\rememb{a2}\strut ch1.txt(4)\rememb{a3}
+							\rememb{b2}\strut ch2.txt(2)\rememb{b3}
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Репозиторий\strut}      %репа
+						
+1
+						
+						\begin{onlyenv}<1->
+							\rememb{a4}\strut ch1.txt(4)
+							\rememb{b4}\strut ch2.txt(2)
+						\end{onlyenv}
+1
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%		
+			\end{minipage}		
+			
+		\end{column}
+	\end{columns}
+	
+	
+	
+	
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[t,fragile]\frametitle{Переключение между ветками}
+	
+	\begin{columns}[onlytextwidth]
+		\edef\colA{0.3}
+		\begin{column}[T]{\colA\linewidth}
+			%Колнка1
+			\begin{tikzpicture}[
+				commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+				committext/.style = {font=\ttfamily},
+				info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+				]
+				\clip (0,0) rectangle (4,7.5);
+				
+				%\draw (0,0) grid (4,7.5);
+				
+				
+				\begin{onlyenv}< 1- >
+					
+					\draw (2,0.5) node[commit] (127e) {} 
+					(127e) node[committext] {127e}; 
+					
+					\draw (2,1.5) node[commit] (6829) {} 
+					(6829) node[committext] {6829};
+					
+					\draw [->] (127e) -- (6829);
+					
+					\draw (2,2.5) node[commit] (4bd4) {} 
+					(4bd4) node[committext] {4bd4}; 
+					
+					\draw [->] (6829) -- (4bd4);	
+					
+					
+					
+					
+				\end{onlyenv}		
+				
+				\begin{onlyenv}<1>
+					\draw (4bd4.0) node[info, right] {@master};
+				\end{onlyenv}
+				
+				\begin{onlyenv}<2>
+					\draw (4bd4.0) node[info, above right] {\textcolor{gray}{@}master};
+					\draw (4bd4.0) node[info, below right] {@wip};
+				\end{onlyenv}
+				
+				\begin{onlyenv}<3>
+					
+					\draw (1,3.5) node[commit] (8e96) {} 
+					(8e96) node[committext] {8e96}; 
+					
+					\draw (4bd4.0) node[info, right] {master};
+					
+					\draw (8e96.south west) node[info, below] {@wip};
+					
+					\draw[->] (4bd4) -- (8e96) ;	
+					
+				\end{onlyenv}
+				
+			\end{tikzpicture}
+			
+			
+		\end{column}
+		\begin{column}[T]{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			
+			\begin{minipage}[t][5.2cm][t]{\textwidth}		
+				
+				\begin{onlyenv}<1>
+					Изменим репозиторий
+					
+					\begin{block}{ch1.txt (Версия 3 $\to$ 4)}
+						\mbox{\cancel{Вечерело}} Наступило утро, на улице шёл дождь.
+					\end{block}
+					
+					\begin{block}{ch2.txt(версия 2)}
+						Однажды, в студёную зимнюю пору\\ 
+						Я из лесу вышел; был сильный мороз.
+					\end{block}
+				\end{onlyenv}
+				
+				\begin{onlyenv}<2>					
+					
+					Создадим ветку
+					
+					\begin{alertblock}{\Verb|git checkout -b имя_ветки| ---}
+						создаёт на текущем коммите (HEAD) новую ветку и переключает на неё HEAD.
+					\end{alertblock}
+					
+					\begin{alertblock}{\Verb|git branch имя_ветки| ---}
+						создаёт на текущем коммите новую ветку, но \textbf{не переключает} на неё HEAD.
+					\end{alertblock}\smallskip
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange}git checkout -b wip
+						
+					\end{VerbatimCmd}
+					
+				\end{onlyenv}
+				
+				\begin{onlyenv}<3>					
+					
+					Закоммитим в ветку
+					
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange}git commit -am "Перефразировал первую главу"
+						
+						PS > !color{orange}git log
+						
+						!color{yellow} commit 8e965b9.... (HEAD -> wip)
+						...						
+						Перефразировал первую главу
+						
+						!color{yellow} commit 4bd412d5b.... (master)
+						...						
+						Коммит номер три!
+						...
+						
+					\end{VerbatimCmd}
+					
+				\end{onlyenv}
+				
+				
+				
+			\end{minipage}\\
+			\begin{minipage}[t][3cm][t]{\linewidth}
+				\begin{minipage}[t]{0.29\linewidth}
+					\begin{exampleblock}{Папка\strut}  %ПАПКА
+						
+						\begin{onlyenv}<1>
+							\strut ch1.txt(3 $\to$ 4)
+							\strut ch2.txt(2)
+						\end{onlyenv}
+						
+						\begin{onlyenv}<2->
+							\strut ch1.txt(4)\rememb{a1}
+							\strut ch2.txt(2)\rememb{b1}
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Индекс\strut}    %Индекс
+						
+						
+						\begin{onlyenv}<1-2>
+							\strut ch1.txt(3)
+							\strut ch2.txt(2)
+							
+						\end{onlyenv}%
+						
+						\begin{onlyenv}<3->
+							\rememb{a2}\strut ch1.txt(4)\rememb{a3}
+							\rememb{b2}\strut ch2.txt(2)\rememb{b3}
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Репозиторий\strut}      %репа
+						
+						\begin{onlyenv}<1-2>
+							\strut ch1.txt(4)
+							\strut ch2.txt(2)
+						\end{onlyenv}
+						
+						\begin{onlyenv}<3->
+							\rememb{a4}\strut ch1.txt(4)
+							\rememb{b4}\strut ch2.txt(2)
+						\end{onlyenv}
+						\begin{onlyenv}<3>
+							\begin{tikzpicture}[remember picture,overlay]
+								\draw [-Latex, thick, red] (a1)--(a2);
+								\draw [-Latex, thick, red] (a3)--(a4);
+								\draw [-Latex, thick, red] (b1)--(b2);
+								\draw [-Latex, thick, red] (b3)--(b4);
+							\end{tikzpicture}
+						\end{onlyenv}
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%		
+			\end{minipage}		
+			
+		\end{column}
+	\end{columns}
+	
+	
+	
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile,t]\frametitle{Ветки}
+	
+	\begin{overlayarea}{0.3\textwidth}{4cm}
+
+	\end{overlayarea}\hfill%
+	\begin{overlayarea}	{0.6\textwidth}{4cm}
+			
+		
+		
+	\end{overlayarea}
+	
+	
+\end{frame}
+
+
+\section{Приложения}
+
+\begin{frame}[fragile]\frametitle{Просмотр лога}\label{f:log}
+	
+		\begin{VerbatimCmd}[gobble=2,fontsize=\small]
+		
+		
+		> !color{orange}git log
+		commit 4bd412d5bfbeb8546f9e383ee6319802d7c2bee3 (HEAD -> master)
+		Author: gavreg <a.gavrilov@stankin.ru>
+		Date:   Thu Mar 19 00:12:14 2026 +0300
+		
+		Коммит номер три!
+		
+		commit 68297fe79d35daed901bcae1f8819b03ec7f5dbd
+		Author: gavreg <a.gavrilov@stankin.ru>
+		Date:   Wed Mar 18 23:24:23 2026 +0300
+		
+		Второй коммит
+		
+		commit 127ec2cc61950b26931bf323c902b1d5cc9b979d
+		Author: gavreg <a.gavrilov@stankin.ru>
+		Date:   Wed Mar 18 19:32:58 2026 +0300
+		
+		Мой первый коммит
+		
+	\end{VerbatimCmd}
+	
+	\hyperlink{ref:tolog}{К слайду}
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{git show 127e}\label{f:show1}
+	
+	\begin{VerbatimCmd}[gobble=2]
+		
+		> !color{orange}git show 127e   
+		commit 127ec2cc61950b26931bf323c902b1d5cc9b979d
+		Author: gavreg <a.gavrilov@stankin.ru>
+		Date:   Wed Mar 18 19:32:58 2026 +0300
+		
+		Мой первый коммит
+		
+		diff --git a/ch1.txt b/ch1.txt
+		new file mode 100644
+		index 0000000..e0b0dee
+		--- /dev/null
+		+++ b/ch1.txt
+		!color{blue}@@ -0,0 +1 @@
+		!color{green}+Вечерело, на улице было холодно.
+		\ No newline at end of file
+		
+	\end{VerbatimCmd}
+	
+	\hyperlink{f:show_back}{К слайду}
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{git show 6829}\label{f:show2}
+	
+	\begin{VerbatimCmd}[gobble=2,fontsize=\footnotesize]
+		
+		> !color{orange} git show 6829
+		...
+		
+		Второй коммит
+		
+		diff --git a/ch1.txt b/ch1.txt
+		index e0b0dee..ccceeb9 100644
+		--- a/ch1.txt
+		+++ b/ch1.txt
+		!color{blue}@@ -1 +1 @@
+		!color{red}-Вечерело, на улице было холодно.
+		\ No newline at end of file
+		!color{green}+Вечерело, на улице было жарко.
+		\ No newline at end of file
+		diff --git a/ch2.txt b/ch2.txt
+		new file mode 100644
+		index 0000000..3f3ac29
+		--- /dev/null
+		+++ b/ch2.txt
+		!color{blue}@@ -0,0 +1 @@
+		!color{green}+Однажды, в студеную зимнюю пору я из лесу вышел.
+		
+	\end{VerbatimCmd}
+	
+	\hyperlink{f:show_back}{К слайду}
+	
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{git show 4bd4}\label{f:show3}
+	
+	\begin{VerbatimCmd}[gobble=2,fontsize=\footnotesize]
+		
+		> !color{orange}git show 4bd4
+		...		
+		Коммит номер три
+		
+		diff --git a/ch1.txt b/ch1.txt
+		index ccceeb9..14fdde3 100644
+		--- a/ch1.txt
+		+++ b/ch1.txt
+		!color{blue}@@ -1 +1 @@
+		!color{red}-Вечерело, на улице было жарко.
+		\ No newline at end of file
+		!color{green}+Вечерело, на улице шёл дождь
+		\ No newline at end of file
+		diff --git a/ch2.txt b/ch2.txt
+		index 3f3ac29..2c56d7c 100644
+		--- a/ch2.txt
+		+++ b/ch2.txt
+		!color{blue}@@ -1 +1,2 @@
+		!color{red}-Однажды, в студеную зимнюю пору я из лесу вышел.
+		\ No newline at end of file
+		!color{green}+Однажды, в студеную зимнюю пору 
+		!color{green}+Я из лесу вышел; был сильный мороз.
+		\ No newline at end of file
+		
+	\end{VerbatimCmd}
+	
+	\hyperlink{f:show_back}{К слайду}
+	
+\end{frame}
+
+\begin{frame}\frametitle{1}
+	
+\fbox{
+\begin{overlayarea}{2cm}{2cm}
+	\tikz{\draw (0,0) -- (4cm, 4cm);}
+\end{overlayarea} }
+	
+	
+\end{frame}
+	
+\end{document}

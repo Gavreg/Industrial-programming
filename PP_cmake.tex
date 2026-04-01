@@ -411,7 +411,7 @@
 					cmake_minimum_required(VERSION 4.1)
 					project("First project")
 					
-					set(X "ФГБАОУ")
+					set(X "ФГАОУ")
 					set(Y "ВО МГТУ")
 					set(Z "СТАНКИН")
 					
@@ -429,8 +429,8 @@
 				
 				PS ...> +color{orange}  cmake -B build
 				...
-				ФГБАОУВО МГТУСТАНКИН
-				ФГБАОУ ВО МГТУ СТАНКИН
+				ФГАОУВО МГТУСТАНКИН
+				ФГАОУ ВО МГТУ СТАНКИН
 				...
 				-- Build files...
 				
@@ -505,7 +505,7 @@
 					cmake_minimum_required(VERSION 4.1)
 					project("First project")
 					
-					set(X "ФГБАОУ" CACHE STRING  "Описание1")
+					set(X "ФГАОУ" CACHE STRING  "Описание1")
 					set(Y "ВО МГТУ" CACHE STRING "Описание2")
 					set(Z "СТАНКИН" CACHE STRING "Описание3")
 					message(${X} ${Y} ${Z})
@@ -522,15 +522,15 @@
 				
 				PS ...> +color{orange}  cmake -B build
 				...
-				ФГБАОУВО МГТУСТАНКИН
-				ФГБАОУ ВО МГТУ СТАНКИН
+				ФГАОУВО МГТУСТАНКИН
+				ФГАОУ ВО МГТУ СТАНКИН
 				...
 				-- Build files... 
 				
 				+pause PS ...> +color{orange} cat .\build\CMakeCache.txt
 				...
 				//Описание1
-				X:STRING=ФГБАОУ
+				X:STRING=ФГАОУ
 				
 				//Описание2
 				Y:STRING=ВО МГТУ
@@ -567,7 +567,7 @@
 				
 				PS ...> +color{orange}cmake -B build
 				...
-				ФГБАОУ ВО МГТУ СТАНКИН
+				ФГАОУ ВО МГТУ СТАНКИН
 				...
 				
 			\end{Verbatim}
@@ -600,7 +600,7 @@
 				
 				PS ...> +color{orange}cmake -B build
 				...
-				ФГБАОУ ВО МГТУ СТАНКИН
+				ФГАОУ ВО МГТУ СТАНКИН
 				...+pause
 				PS ...> +color{orange}rm -r build -Force
 				PS ...> +color{orange}cmake -B build
