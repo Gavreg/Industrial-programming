@@ -363,9 +363,10 @@
 		\end{cppcode}
 	\end{block}
 	
+	\IfFileExists{_minted}{
 	\begin{tikzpicture}[remember picture, overlay]
 		\node[draw, red, fit=(a)(b)] {};
-	\end{tikzpicture}
+	\end{tikzpicture}}
 	
 	\begin{block}{main.cpp}
 		\begin{cppcode}
@@ -381,9 +382,10 @@
 		\end{cppcode}
 	\end{block}
 	
+	\IfFileExists{_minted}{
 	\begin{tikzpicture}[remember picture, overlay]
 		\node[draw, red, fit=(a)(b)] {};
-	\end{tikzpicture}
+	\end{tikzpicture}}
 	
 \end{frame}
 
@@ -425,9 +427,10 @@
 		\end{cppcode}
 	\end{block}
 	
-	\begin{tikzpicture}[remember picture, overlay]
-		\node[draw, red, fit=(a)(b)] {};
-	\end{tikzpicture}
+	\IfFileExists{_minted}{
+		\begin{tikzpicture}[remember picture, overlay]
+			\node[draw, red, fit=(a)(b)] {};
+	\end{tikzpicture}}
 	
 	\begin{Verbatim}[bgcolor=black,tabsize=4,formatcom=\color{white},gobble=2,fontsize=\small, commandchars=\\\{\}, xleftmargin=0em, frame=single,framerule=0pt ,rulecolor=\color{red},framesep=1em,fillcolor=\color{black}]
 		
