@@ -2,11 +2,12 @@
 *
 
 # Но не игнорировать эти файлы и папки
+!*.bat
 !images/
 !images/**
 !*.tex
 !*.pdf
 !*.txt
 !*.md
-
+!include/
 !.gitignore
