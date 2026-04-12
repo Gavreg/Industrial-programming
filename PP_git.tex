@@ -821,109 +821,6 @@
 \end{frame}
 
 
-\begin{frame}[fragile]\frametitle{Сброс репозитория}
-	
-	
-	
-	\begin{minipage}[t][\paperheight-3cm][b]{0.3\linewidth}
-		\begin{tikzpicture}[
-			commit/.style = {draw,minimum width=3em,minimum height=1.5em},
-			committext/.style = {font=\ttfamily},
-			info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
-			]
-			%\draw (0,0) grid (4,7.5);
-			\clip (0,0) rectangle (4,7.5);
-			
-			\begin{onlyenv}< 1- >
-				
-				\draw (2,0.5) node[commit] (127e) {} 
-				(127e) node[committext] {127e}; 
-				
-				\draw (2,1.5) node[commit] (6829) {} 
-				(6829) node[committext] {6829};
-				
-				\draw [->] (127e) -- (6829);
-				
-				\draw (2,2.5) node[commit] (4bd4) {} 
-				(4bd4) node[committext] {4bd4}; 
-				
-				\draw [->] (6829) -- (4bd4);
-				
-				\only<1->{\draw (4bd4.0) node[info, right] {HEAD\\master};}			
-				
-			\end{onlyenv}	
-			
-			
-			
-			
-		\end{tikzpicture}
-	\end{minipage}\hfill%
-	\begin{minipage}[t][\paperheight-3cm][t]{0.68\linewidth}
-		
-		\begin{minipage}[t][5.2cm][t]{\linewidth}		
-			
-			\begin{onlyenv}< 1 >%
-				Просмотр коммита
-				
-				\begin{alertblock}{\Verb|git reset| --- }
-					это команда Git, предназначенная для детального просмотра информации об объектах (коммитах, тегах, файлах) в удобном для чтения формате. 
-				\end{alertblock}
-				
-				Самый частый вариант синтаксиса:
-				
-				\Verb|git show объект|
-				
-				Объектом может являться практически любая сущность git.
-				
-				Коммит может определятся хешем, именем (или веткой), тегом.					
-			\end{onlyenv}	
-			
-			
-		\end{minipage}\\
-		\begin{minipage}[t][3cm][t]{\linewidth}
-			\begin{minipage}[t]{0.29\linewidth}
-				\begin{exampleblock}{Папка\strut}  %ПАПКА
-					
-					\begin{onlyenv}<1->
-						\strut ch1.txt(3)\rememb{a}
-						\strut ch2.txt(2)\rememb{b}
-					\end{onlyenv}
-					
-					
-				\end{exampleblock}
-			\end{minipage}\hfill%
-			\begin{minipage}[t]{0.29\linewidth}
-				\begin{exampleblock}{Индекс\strut}    %Индекс
-					
-					
-					\begin{onlyenv}<1->
-						\strut ch1.txt(3)
-						\strut ch2.txt(2)
-						
-					\end{onlyenv}%
-					
-					
-				\end{exampleblock}
-			\end{minipage}\hfill%
-			\begin{minipage}[t]{0.29\linewidth}
-				\begin{exampleblock}{Репозиторий\strut}      %репа
-					
-					\begin{onlyenv}<1->
-						\rememb{a3}\strut ch1.txt(3)
-						\rememb{b3}\strut ch2.txt(2)%
-					\end{onlyenv}
-					
-				\end{exampleblock}
-			\end{minipage}\hfill%		
-		\end{minipage}		
-		
-	\end{minipage}
-	
-	
-\end{frame}
-
-
-
 \begin{frame}[fragile]\frametitle{Ветки. Основные операции и команды}
 	
 	
@@ -1279,120 +1176,6 @@
 \end{frame}
 
 
-\begin{frame}[t,fragile]\frametitle{Просмотр содержимого коммитов}
-	
-	\begin{columns}[onlytextwidth]
-		\edef\colA{0.3}
-		\begin{column}[T]{\colA\linewidth}
-			%Колнка1
-			\begin{tikzpicture}[
-				commit/.style = {draw,minimum width=3em,minimum height=1.5em},
-				committext/.style = {font=\ttfamily},
-				info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
-				]
-				\clip (0,0) rectangle (4,7.5);
-				
-				%\draw (0,0) grid (4РУФВ,7.5);
-				
-				
-				\begin{onlyenv}< 1- >
-					
-					\draw (2,0.5) node[commit] (127e) {} 
-					(127e) node[committext] {127e}; 
-					
-					\draw (2,1.5) node[commit] (6829) {} 
-					(6829) node[committext] {6829};
-					
-					\draw [->] (127e) -- (6829);
-					
-					\draw (2,2.5) node[commit] (4bd4) {} 
-					(4bd4) node[committext] {4bd4}; 
-					
-					\draw [->] (6829) -- (4bd4);	
-					
-					
-					\draw (1,3.5) node[commit] (8e96) {} 
-					(8e96) node[committext] {8e96}; 
-					
-					\draw (4bd4.0) node[info, right] {master};
-					
-					\draw (8e96.south west) node[info, below] {@wip};
-					
-					\draw[->] (4bd4) -- (8e96) ;	
-					
-				\end{onlyenv}
-				
-			\end{tikzpicture}
-			
-			
-		\end{column}
-		\begin{column}[T]{\fpeval{1-\colA}\linewidth}
-			%Колнка2
-			
-			\begin{minipage}[t][5.2cm][t]{\textwidth}		
-				
-				\begin{alertblock}{\Verb|HEAD (@)| ---}
-					специальный указатель на коммит, на котором находится репозиторий. 
-				\end{alertblock}
-				
-				
-				
-				
-				
-			\end{minipage}\\
-			\begin{minipage}[t][3cm][t]{\linewidth}
-				\begin{minipage}[t]{0.29\linewidth}
-					\begin{exampleblock}{Папка\strut}  %ПАПКА
-						
-
-						
-						\begin{onlyenv}<1->
-							\strut ch1.txt(4)\rememb{a1}
-							\strut ch2.txt(2)\rememb{b1}
-						\end{onlyenv}
-						
-						
-					\end{exampleblock}
-				\end{minipage}\hfill%
-				\begin{minipage}[t]{0.29\textwidth}
-					\begin{exampleblock}{Индекс\strut}    %Индекс
-						
-11
-						
-						\begin{onlyenv}<1->
-							\rememb{a2}\strut ch1.txt(4)\rememb{a3}
-							\rememb{b2}\strut ch2.txt(2)\rememb{b3}
-						\end{onlyenv}
-						
-						
-					\end{exampleblock}
-				\end{minipage}\hfill%
-				\begin{minipage}[t]{0.29\textwidth}
-					\begin{exampleblock}{Репозиторий\strut}      %репа
-						
-1
-						
-						\begin{onlyenv}<1->
-							\rememb{a4}\strut ch1.txt(4)
-							\rememb{b4}\strut ch2.txt(2)
-						\end{onlyenv}
-1
-						
-					\end{exampleblock}
-				\end{minipage}\hfill%		
-			\end{minipage}		
-			
-		\end{column}
-	\end{columns}
-	
-	
-	
-	
-\end{frame}
-
-
-
-
 
 
 \begin{frame}[t,fragile]\frametitle{Переключение между ветками}
@@ -1431,13 +1214,31 @@
 					
 				\end{onlyenv}		
 				
+
 				\begin{onlyenv}<1>
-					\draw (4bd4.0) node[info, right] {@master};
+					
+					\draw (1,3.5) node[commit] (8e96) {} 
+					(8e96) node[committext] {8e96}; 
+					
+					\draw (4bd4.0) node[info, right] {master};
+					
+					\draw (8e96.south west) node[info, below] {@wip};
+					
+					\draw[->] (4bd4) -- (8e96) ;	
+					
 				\end{onlyenv}
 				
 				\begin{onlyenv}<2>
-					\draw (4bd4.0) node[info, above right] {\textcolor{gray}{@}master};
-					\draw (4bd4.0) node[info, below right] {@wip};
+					
+					\draw (1,3.5) node[commit] (8e96) {} 
+					(8e96) node[committext] {8e96}; 
+					
+					\draw (4bd4.0) node[info, right] {@master};
+					
+					\draw (8e96.south west) node[info, below] {wip};
+					
+					\draw[->] (4bd4) -- (8e96) ;	
+					
 				\end{onlyenv}
 				
 				\begin{onlyenv}<3>
@@ -1462,63 +1263,64 @@
 			
 			\begin{minipage}[t][5.2cm][t]{\textwidth}		
 				
-				\begin{onlyenv}<1>
-					Изменим репозиторий
+			
+				\begin{onlyenv}<1>					
 					
-					\begin{block}{ch1.txt (Версия 3 $\to$ 4)}
-						\mbox{\cancel{Вечерело}} Наступило утро, на улице шёл дождь.
-					\end{block}
+					1. Посмотрим файлы из других  коммитов
 					
-					\begin{block}{ch2.txt(версия 2)}
-						Однажды, в студёную зимнюю пору\\ 
-						Я из лесу вышел; был сильный мороз.
-					\end{block}
-				\end{onlyenv}
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange}cat ch1.txt    !color{gray} #файл в директории    
+						Наступило утро, на улице шёл дождь
+						PS > !color{orange}git show :ch1.txt   !color{gray} #файл в индексе  
+						Наступило утро, на улице шёл дождь			
+						PS > !color{orange}git show "@:ch1.txt"  !color{gray} #файл в HEAD  
+						Наступило утро, на улице шёл дождь
+						PS > !color{orange}git show "@~1:ch1.txt" !color{gray} #файл до HEAD
+						Вечерело, на улице шёл дождь
+						PS > !color{orange}git show "master:ch1.txt" !color{gray} #файл в master
+						Вечерело, на улице шёл дождь
+						
+					\end{VerbatimCmd}
+					
+					
+					
+					
+				\end{onlyenv}		
 				
 				\begin{onlyenv}<2>					
 					
-					Создадим ветку
-					
-					\begin{alertblock}{\Verb|git checkout -b имя_ветки| ---}
-						создаёт на текущем коммите (HEAD) новую ветку и переключает на неё HEAD.
-					\end{alertblock}
-					
-					\begin{alertblock}{\Verb|git branch имя_ветки| ---}
-						создаёт на текущем коммите новую ветку, но \textbf{не переключает} на неё HEAD.
-					\end{alertblock}\smallskip
+					2. Переключемся на \Verb|master|
 					
 					\begin{VerbatimCmd}[gobble=6]
 						
-						PS > !color{orange}git checkout -b wip
+						PS > !color{orange} git checkout master
+						Switched to branch 'master'
+						
+						PS > !color{orange} cat ch1.txt
+						Вечерело, на улице шёл дождь
+						
+						PS > !color{orange} git show wip:ch1.txt
+						Наступило утро, на улице шёл дождь
 						
 					\end{VerbatimCmd}
 					
 				\end{onlyenv}
 				
-				\begin{onlyenv}<3>					
-					
-					Закоммитим в ветку
-					
+				
+				\begin{onlyenv}<3>
+					3. Переключемся на \Verb|wip|
 					
 					\begin{VerbatimCmd}[gobble=6]
 						
-						PS > !color{orange}git commit -am "Перефразировал первую главу"
+						PS > !color{orange} git checkout wip    
+						Switched to branch 'wip'
 						
-						PS > !color{orange}git log
-						
-						!color{yellow} commit 8e965b9.... (HEAD -> wip)
-						...						
-						Перефразировал первую главу
-						
-						!color{yellow} commit 4bd412d5b.... (master)
-						...						
-						Коммит номер три!
-						...
+						PS > !color{orange} cat ch1.txt         
+						Наступило утро, на улице шёл дождь
 						
 					\end{VerbatimCmd}
-					
-				\end{onlyenv}
-				
+				\end{onlyenv}	
 				
 				
 			\end{minipage}\\
@@ -1527,14 +1329,20 @@
 					\begin{exampleblock}{Папка\strut}  %ПАПКА
 						
 						\begin{onlyenv}<1>
-							\strut ch1.txt(3 $\to$ 4)
-							\strut ch2.txt(2)
-						\end{onlyenv}
-						
-						\begin{onlyenv}<2->
 							\strut ch1.txt(4)\rememb{a1}
 							\strut ch2.txt(2)\rememb{b1}
 						\end{onlyenv}
+						
+						\begin{onlyenv}<2>
+							\rememb{a2}\strut ch1.txt(4$\to$3)\rememb{a3}
+							\rememb{b2}\strut ch2.txt(2$\to$2)\rememb{b3}
+						\end{onlyenv}
+						
+						\begin{onlyenv}<3>
+							\strut ch1.txt(3$\to$4)
+							\strut ch2.txt(2$\to$2)
+						\end{onlyenv}
+						
 						
 						
 					\end{exampleblock}
@@ -1543,15 +1351,20 @@
 					\begin{exampleblock}{Индекс\strut}    %Индекс
 						
 						
-						\begin{onlyenv}<1-2>
-							\strut ch1.txt(3)
-							\strut ch2.txt(2)
-							
-						\end{onlyenv}%
-						
-						\begin{onlyenv}<3->
+					
+						\begin{onlyenv}<1>
 							\rememb{a2}\strut ch1.txt(4)\rememb{a3}
 							\rememb{b2}\strut ch2.txt(2)\rememb{b3}
+						\end{onlyenv}
+						
+						\begin{onlyenv}<2>
+							\strut ch1.txt(4$\to$3)
+							\strut ch2.txt(2$\to$2)
+						\end{onlyenv}
+						
+						\begin{onlyenv}<3>
+							\strut ch1.txt(3$\to$4)
+							\strut ch2.txt(2$\to$2)
 						\end{onlyenv}
 						
 						
@@ -1560,22 +1373,19 @@
 				\begin{minipage}[t]{0.29\textwidth}
 					\begin{exampleblock}{Репозиторий\strut}      %репа
 						
-						\begin{onlyenv}<1-2>
-							\strut ch1.txt(4)
-							\strut ch2.txt(2)
-						\end{onlyenv}
-						
-						\begin{onlyenv}<3->
+						\begin{onlyenv}<1>
 							\rememb{a4}\strut ch1.txt(4)
 							\rememb{b4}\strut ch2.txt(2)
 						\end{onlyenv}
+						
+						\begin{onlyenv}<2>
+							\strut ch1.txt(4$\to$3)
+							\strut ch2.txt(2$\to$2)
+						\end{onlyenv}
+						
 						\begin{onlyenv}<3>
-							\begin{tikzpicture}[remember picture,overlay]
-								\draw [-Latex, thick, red] (a1)--(a2);
-								\draw [-Latex, thick, red] (a3)--(a4);
-								\draw [-Latex, thick, red] (b1)--(b2);
-								\draw [-Latex, thick, red] (b3)--(b4);
-							\end{tikzpicture}
+							\strut ch1.txt(3$\to$4)
+							\strut ch2.txt(2$\to$2)
 						\end{onlyenv}
 						
 					\end{exampleblock}
@@ -1591,20 +1401,289 @@
 \end{frame}
 
 
-
-\begin{frame}[fragile,t]\frametitle{Ветки}
+\begin{frame}[fragile]\frametitle{Другие команды для переключения}
 	
-	\begin{overlayarea}{0.3\textwidth}{4cm}
+	\begin{alertblock} {\Verb|git switch| --- }
+		команда Git, появившаяся в версии 2.23 (2019 год) для переключения между ветками. Она была выделена из более универсальной команды git checkout
+	\end{alertblock}
+	
+	\begin{itemize}
+		\item Переключение на существующую ветку:\\
+		\Verb|git switch название_ветки|
+		
+		\item Создание и переключение на новую ветку:\\
+		\Verb |git switch -c новая_ветка|\\
+		(аналог \Verb|git checkout -b|)
+		
+		\item Переключение на предыдущую ветку:\\
+		\Verb|git switch -|\\
+		(возвращает на ветку, на которой вы были до этого)
+		
+		\item Принудительное переключение (отмена локальных изменений):\\
+		\Verb|git switch -f ветка|\\
+		(отбрасывает незакоммиченные изменения)
+	\end{itemize}
+	
 
-	\end{overlayarea}\hfill%
-	\begin{overlayarea}	{0.6\textwidth}{4cm}
-			
-		
-		
-	\end{overlayarea}
 	
 	
 \end{frame}
+
+
+\begin{frame}[t,fragile]\frametitle{Удаление веток (DANGER!!)}
+	
+	\begin{columns}[onlytextwidth]
+		\edef\colA{0.3}
+		\begin{column}[T]{\colA\linewidth}
+			%Колнка1
+			\begin{tikzpicture}[
+				commit/.style = {draw,minimum width=3em,minimum height=1.5em},
+				committext/.style = {font=\ttfamily},
+				info/.style = {font=\ttfamily\color{FireBrick}\small,align=left},
+				]
+				\clip (0,0) rectangle (4,7.5);
+				
+				%\draw (0,0) grid (4,7.5);
+				
+				
+				\begin{onlyenv}< 1- >
+					
+					\draw (2,0.5) node[commit] (127e) {} 
+					(127e) node[committext] {127e}; 
+					
+					\draw (2,1.5) node[commit] (6829) {} 
+					(6829) node[committext] {6829};
+					
+					\draw [->] (127e) -- (6829);
+					
+					\draw (2,2.5) node[commit] (4bd4) {} 
+					(4bd4) node[committext] {4bd4}; 
+					
+					\draw [->] (6829) -- (4bd4);	
+					
+						
+				\end{onlyenv}	
+				
+				\begin{onlyenv}<1-3>
+					
+					
+					\draw (1,3.5) node[commit] (8e96) {} 
+					(8e96) node[committext] {8e96};					
+					\draw (1,4.5) node[commit] (eec7) {} 
+					(eec7) node[committext] {eec7}; 
+					
+					\draw[->] (8e96) -- (eec7);
+					\draw[->] (4bd4) -- (8e96);					
+					
+					\draw (eec7.south west) node[info, below] {@wip};
+					\draw (4bd4.0) node[info, right] {master};
+				\end{onlyenv}
+				
+				\begin{onlyenv}<4-5>
+					
+					\begin{scope}[opacity=0.5]
+						\draw (1,3.5) node[commit] (8e96) {} 
+						(8e96) node[committext] {8e96};					
+						\draw (1,4.5) node[commit] (eec7) {} 
+						(eec7) node[committext] {eec7}; 
+						
+						\draw[->] (8e96) -- (eec7);
+						\draw[->] (4bd4) -- (8e96);	
+						
+					\end{scope}				
+					
+					\draw (4bd4.0) node[info, right] {@master};
+				\end{onlyenv}
+				
+				\begin{onlyenv}<6>
+					
+					\begin{scope}[opacity=1]
+						\draw (1,3.5) node[commit] (8e96) {} 
+						(8e96) node[committext] {8e96};					
+						\draw (1,4.5) node[commit] (eec7) {} 
+						(eec7) node[committext] {eec7}; 
+						
+						\draw[->] (8e96) -- (eec7);
+						\draw[->] (4bd4) -- (8e96);	
+						
+					\end{scope}				
+					
+					\draw (4bd4.0) node[info, right] {master};
+					\draw (eec7.180) node[info, left] {@};
+				\end{onlyenv}	
+				
+			
+				
+			\end{tikzpicture}
+			
+			
+		\end{column}
+		\begin{column}[T]{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			
+			\begin{minipage}[t][5.2cm][t]{\textwidth}		
+				
+				\begin{onlyenv}<1>
+					1. Изменим файл и закоммитим на \Verb|wip|
+					
+					\begin{block}{ch2.txt(версия 2 $\to$ 3)}
+						Однажды, в студеную зимнюю пору\\
+						Я из лесу вышел; был сильный мороз.\\
+						Гляжу, поднимается медленно в гору\\
+						Лошадка, везущая хворосту воз.						
+					\end{block}
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange} git commit -am "Закончил стих"
+						[wip eec7966] Закончил стих
+						1 file changed, 3 insertions(+), 1 deletion(-)
+						
+					\end{VerbatimCmd}
+					
+				\end{onlyenv}	
+				
+				\begin{onlyenv}<2>
+					
+					\begin{alertblock}{\Verb|git branch -D имя_ветки| --- }
+						принудительное удаление ветки. Команда принудительно удаляет указанную ветку без проверки того, слиты ли её изменения в текущую или другую ветку.
+					\end{alertblock}
+					
+					\begin{alertblock}{\Verb|git reflog| --- }
+						журнал ссылок (Reference Log). Команда показывает историю перемещений указателей (HEAD, веток) в локальном репозитории. Это локальный журнал всех действий, которые меняли положение веток.
+					\end{alertblock}
+					
+				\end{onlyenv}
+				
+				
+				\begin{onlyenv}<3-4>
+					
+					2. Удаляем ветку
+					
+					\begin{uncoverenv}<3->
+						
+						\begin{VerbatimCmd}[gobble=7]
+							
+							PS > !color{orange}git branch -D wip    
+							error: cannot delete branch 'wip' used by worktree
+							
+						\end{VerbatimCmd}
+						
+					\end{uncoverenv}
+					\begin{uncoverenv}<4->
+						
+						\begin{VerbatimCmd}[gobble=7]
+							
+							PS > !color{orange}git checkout master    
+							PS > !color{orange}git branch -D wip 
+							Deleted branch wip (was eec7966).  
+							
+						\end{VerbatimCmd}
+						
+					\end{uncoverenv}
+					
+				
+					
+					
+				\end{onlyenv}
+				
+				\begin{onlyenv}<5>
+					3. Пытаемся починить
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange} git reflog
+						4bd412d (HEAD -> master) HEAD@{0}: checkout: moving from wip to master
+						!textcolor{red}{eec7966} HEAD@{1}: commit: Закончил стих
+						8e965b9 HEAD@{2}: checkout: moving from master to wip
+						4bd412d (HEAD -> master) HEAD@{3}: checkout: moving from wip to master
+						8e965b9 HEAD@{4}: checkout: moving from master to wip
+						4bd412d (HEAD -> master) HEAD@{5}: checkout: moving from wip to master
+						
+					\end{VerbatimCmd}
+				\end{onlyenv}
+				
+				
+				\begin{onlyenv}<6>
+					
+					\begin{VerbatimCmd}[gobble=6]
+						
+						PS > !color{orange} git checkout eec7  
+						Note: switching to 'eec7'.
+						
+						You are in 'detached HEAD' state...и еще много текста
+						...
+						HEAD is now at eec7966 Закончил стих
+						
+					\end{VerbatimCmd}
+					
+					\begin{alertblock}{Detached HEAD --- }
+						это состояние в Git, когда указатель HEAD ссылается не на ветку (не на имя ветки, например main или develop), а непосредственно на конкретный коммит
+					\end{alertblock}
+				\end{onlyenv}
+				
+				
+				
+			\end{minipage}\\
+			\begin{minipage}[t][3cm][t]{\linewidth}
+				\begin{minipage}[t]{0.29\linewidth}
+					\begin{exampleblock}{Папка\strut}  %ПАПКА
+						
+						\begin{onlyenv}<1>
+							\strut ch1.txt(4)
+							\strut ch2.txt(2 $\to$ 3)
+						\end{onlyenv}
+						
+						\begin{onlyenv}<2->
+							\strut ch1.txt(4)
+							\strut ch2.txt(3)
+						\end{onlyenv}
+						
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Индекс\strut}    %Индекс
+						
+						
+						\begin{onlyenv}<1>
+							\strut ch1.txt(4)
+							\strut ch2.txt(2 $\to$ 3)							
+						\end{onlyenv}%
+						
+						\begin{onlyenv}<2->
+							\strut ch1.txt(4)
+							\strut ch2.txt(3)							
+						\end{onlyenv}%
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%
+				\begin{minipage}[t]{0.29\textwidth}
+					\begin{exampleblock}{Репозиторий\strut}      %репа
+						
+						\begin{onlyenv}<1>
+							\strut ch1.txt(4)
+							\strut ch2.txt(2 $\to$ 3)
+						\end{onlyenv}	
+						
+						\begin{onlyenv}<2->
+							\strut ch1.txt(4)
+							\strut ch2.txt(3)
+						\end{onlyenv}					
+						
+					\end{exampleblock}
+				\end{minipage}\hfill%		
+			\end{minipage}		
+			
+		\end{column}
+	\end{columns}
+	
+	
+	
+	
+\end{frame}
+
+
 
 
 \section{Приложения}
@@ -1731,14 +1810,6 @@
 	
 \end{frame}
 
-\begin{frame}\frametitle{1}
-	
-\fbox{
-\begin{overlayarea}{2cm}{2cm}
-	\tikz{\draw (0,0) -- (4cm, 4cm);}
-\end{overlayarea} }
-	
-	
-\end{frame}
+
 	
 \end{document}
