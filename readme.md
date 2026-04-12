@@ -11,3 +11,10 @@
 [Лекция 2-3. С++ Модульные программы и библиотеки](PP_Cppmodules.pdf)
 
 [Лекция 4-6 Системы контроля версий](PP_git.pdf) 
+
+
+Собрано командой 
+```
+latexmk -pdfxe --shell-escape -8bit -halt-on-error
+```
+Дистрибутив TexLive 2026 + python 3.14.
