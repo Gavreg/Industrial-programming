@@ -150,8 +150,8 @@
 
 
 \hypersetup{
-	colorlinks=true,
-	linkcolor=blue,
+	%colorlinks=true,
+	%linkcolor=blue,
 }
 
 
@@ -188,8 +188,12 @@
 \edef\LectionNumber{0}
 \edef\LectionTheme{0}
 
+
+\makeatletter
 \let\oldsection\section
+\expandafter\let\expandafter\oldstarsection\csname section*\endcsname
 \let\oldsubsection\subsection
+
 
 
 \AtBeginDocument
@@ -208,7 +212,11 @@
 							\protect\par}
 }
 
-\renewcommand{\section}[2][]{
+
+\renewcommand{\section}{\@ifstar\oldstarsection\mynewsection}
+\makeatother
+
+\newcommand{\mynewsection}[2][]{
 	\ifstrempty{#1}%
 	{\oldsection{#2}}%
 	{\oldsection[#1]{#2}}	

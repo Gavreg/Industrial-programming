@@ -100,11 +100,7 @@
 {	
 	
 		\frame{\maketitle}
-		
-		\begin{frame}\frametitle{План лекции}			
-			\tableofcontents
-		\end{frame}
-
+	
 	
 }
 
@@ -122,7 +118,12 @@
 	\end{center}
 }
 	
+\section{Git}
 
+\begin{frame}
+	\tableofcontents
+	\sectionpage
+\end{frame}
 
 \begin{frame}[fragile]\frametitle{git}
 	
@@ -162,6 +163,13 @@
 		> !color{orange}brew install git	
 		
 	\end{VerbatimCmd}
+	
+	
+\end{frame}
+
+\begin{frame}\frametitle{Работа через графический интерфейс}\framesubtitle{Но так никто не делает}
+	
+	\centering\tikz{\node[inner sep=0pt,draw,color=black!50!white,line width=1pt]{\IG[0.75]{gui.jpg}};}
 	
 	
 \end{frame}
@@ -252,6 +260,13 @@
 	
 		
 	
+\end{frame}
+
+\section{Коммиты в git}
+
+\begin{frame}
+	\tableofcontents
+	\sectionpage
 \end{frame}
 
 
@@ -761,9 +776,9 @@
 				
 				\begin{itemize} 
 					\item По хешу\\
-						\Verb|git show 127e| \hyperlink{f:show1}{Пример}\\
-						\Verb|git show 6829| \hyperlink{f:show2}{Пример}\\
-						\Verb|git show 4db4| \hyperlink{f:show3}{Пример}
+						\Verb|git show 127e| \hyperlink{f:show1}{\color{cyan}\itshape Пример}\\
+						\Verb|git show 6829| \hyperlink{f:show2}{\color{cyan}\itshape Пример}\\
+						\Verb|git show 4db4| \hyperlink{f:show3}{\color{cyan}\itshape Пример}
 					\item По ветке или тегу\\
 						\Verb|git show master|\\
 					\item По специальному указателю\\
@@ -818,6 +833,13 @@
 	\end{minipage}
 	
 	
+\end{frame}
+
+\section{Ветки в git}
+
+\begin{frame}
+	\tableofcontents
+	\sectionpage
 \end{frame}
 
 
@@ -1686,7 +1708,11 @@
 
 
 
-\section{Приложения}
+\section*{Приложения}
+
+\begin{frame}
+	\centering\Huge Приложения
+\end{frame}
 
 \begin{frame}[fragile]\frametitle{Просмотр лога}\label{f:log}
 	
@@ -1740,7 +1766,7 @@
 		
 	\end{VerbatimCmd}
 	
-	\hyperlink{f:show_back}{К слайду}
+	\hyperlink{f:show_back}{\color{cyan}\itshape К слайду}
 	
 \end{frame}
 
@@ -1772,7 +1798,7 @@
 		
 	\end{VerbatimCmd}
 	
-	\hyperlink{f:show_back}{К слайду}
+	\hyperlink{f:show_back}{\color{cyan}\itshape К слайду}
 	
 \end{frame}
 
@@ -1806,7 +1832,7 @@
 		
 	\end{VerbatimCmd}
 	
-	\hyperlink{f:show_back}{К слайду}
+	\hyperlink{f:show_back}{\color{cyan}\itshape К слайду}
 	
 \end{frame}
 
