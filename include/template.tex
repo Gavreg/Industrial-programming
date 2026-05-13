@@ -2,27 +2,35 @@
 \defbeamertemplate*{title page}{my theme}
 {
 	
-	\hfill
+	\vspace{1cm}
+	
+	{
+		\centering
+		\includegraphics[width=5cm]{stankin-logo-main-color-ru-blue.eps}\\
+	}
+	
+	
+	
+	
+	\vspace{2em}
 	
 	\begin{beamercolorbox}[wd=.9\paperwidth,center,]{title}%
+		\smallskip
 		
-	\end{beamercolorbox}%	
-	
-	\vbox to 1em {}
-	
-	\begin{beamercolorbox}[wd=.9\paperwidth,center,]{title}%
 		\usebeamerfont{subtitle}%
-		\hfill
+			
+		\insertsubtitle 
 		
-		\insertsubtitle
+		\smallskip
 		
-		\usebeamerfont{title}%
-		\inserttitle{} \vspace{0.5ex}
+		\usebeamerfont{title}\textbf{\inserttitle{}} \vspace{0.5ex}
+		
+		\smallskip
 		
 		
-		
-	\end{beamercolorbox}%	
-	\hfill\hfill
+	\end{beamercolorbox}
+	
+	\vspace{2em}
 	
 	\begin{beamercolorbox}[wd=.9\paperwidth,center,]{}%
 		\usebeamerfont{author}%
@@ -31,7 +39,7 @@
 		\regals
 		    
 		\vbox to 1em{}
-		\usebeamerfont{institute}%
+		%\usebeamerfont{institute}%
 		\insertinstitute {}
 		
 		\vbox to 1em{}			

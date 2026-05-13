@@ -14,7 +14,7 @@
 
 \setmainfont{Times New Roman} 
 \setsansfont{Arial} 
-\setmonofont{Consolas}  
+\setmonofont{Cascadia Mono}  
 
 
 
@@ -103,6 +103,7 @@
 \usetikzlibrary{decorations.pathreplacing}
 \usetikzlibrary{matrix}
 \usetikzlibrary{fit}
+\usepackage{forest}
 
 \newcommand{\rememb}[1]{\parbox{0pt}{}\tikz[remember picture,baseline=-0.5ex]{\draw node[inner sep=0pt, outer sep=0pt] (#1){\strut};}}
 
@@ -191,7 +192,7 @@
 
 \makeatletter
 \let\oldsection\section
-\expandafter\let\expandafter\oldstarsection\csname section*\endcsname
+%\expandafter\let\expandafter\oldstarsection\csname section*\endcsname
 \let\oldsubsection\subsection
 
 
@@ -213,21 +214,27 @@
 }
 
 
-\renewcommand{\section}{\@ifstar\oldstarsection\mynewsection}
-\makeatother
+\renewcommand{\section}{\@ifstar{\mynewstarsection}{\mynewsection}}
 
 \newcommand{\mynewsection}[2][]{
 	\ifstrempty{#1}%
 	{\oldsection{#2}}%
 	{\oldsection[#1]{#2}}	
 	\addtostream{CONTENT}{%
-			\protect\noindent%
-			\protect\stepcounter{SEC}%
-			\protect\setcounter{SUB}{0}%
-			\protect\hspace{3ex}%
-			\protect\theSEC ~ #1 \protect\par%
-			}
+		\protect\noindent%
+		\protect\stepcounter{SEC}%
+		\protect\setcounter{SUB}{0}%
+		\protect\hspace{3ex}%
+		\protect\theSEC ~ #1 \protect\par%
+	}
 }
+\newcommand{\mynewstarsection}[1]
+{
+	\oldsection*{#1}
+}
+
+\makeatother
+
 
 \renewcommand{\subsection}[1]{
 	\oldsubsection{#1}
@@ -288,7 +295,13 @@
 	\end{frame}%
 }
 
-\newcommand{\IG}[2][1]{\includegraphics[width=#1\textwidth]{#2}}
+\newcommand{\IG}[2][1]{\includegraphics[width=#1\linewidth]{#2}}
+
+
+
+
+
+\usepackage{varwidth}
 
 
 %===========Настройка листингов==================
@@ -308,18 +321,24 @@
 	
 	\newminted[cmakecode]{cmake}{linenos, autogobble=true, style=default,tabsize=2,fontsize=\footnotesize,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
 	
-	\newminted[cmdcode]{Batch}{linenos, autogobble=true, bgcolor=red,  style=lightbulb,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+	\newminted[cmdcode]{text}{ frame=single, autogobble=true, xleftmargin=0.1pt, rulecolor=black,formatcom=\color{white} , framerule=1ex,framesep=0pt, bgcolor=black, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@}
+	
+	\newminted[cmdcodefootnotesize]{text}{ frame=single, autogobble=true, xleftmargin=0.1pt, rulecolor=black,formatcom=\color{white} , framerule=1ex,framesep=0pt, bgcolor=black, style=vs,tabsize=2,fontsize=\footnotesize,escapeinside=\@\@}
+	
+
+	
+	
 }
 
-\mode<!presentation>
-{
-	\newminted[cppcode]{c++}{linenos,  frame=lines, style=vs,tabsize=3,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
-	\newminted[cppresumecode]{c++}{linenos, firstnumber=last, frame=lines, style=vs,tabsize=3,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
-	
-	\newminted[cmakecode]{cmake}{linenos, autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
-	
-	\newminted[cmdcode]{batch}{linenos, autogobble=true, style=lightbulb,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
-}
+%\mode<!presentation>
+%{
+%	\newminted[cppcode]{c++}{linenos,  frame=lines, style=vs,tabsize=3,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
+%	\newminted[cppresumecode]{c++}{linenos, firstnumber=last, frame=lines, style=vs,tabsize=3,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
+%	
+%	\newminted[cmakecode]{cmake}{linenos, autogobble=true, style=vs,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=2em}
+%	
+%	\newminted[cmdcode]{batch}{linenos, autogobble=true, style=lightbulb,tabsize=2,fontsize=\small,escapeinside=\@\@,xleftmargin=0em, numbersep=0.5em}
+%}
 
 \newenvironment{codeblock}[2][]
 {
