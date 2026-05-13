@@ -1,0 +1,875 @@
+\documentclass[9pt, aspectratio=1610]{beamer}
+%\documentclass{article}
+%\usepackage{beamerarticle}
+\mode<article>
+{
+	\usepackage[a4paper]{geometry}
+}
+
+
+
+\edef\tlCourse{Промышленное программирование}
+\edef\tlPartName{Раздел 1. Разработка модульных программ}
+\edef\tlPartNumber{1}
+\edef\tlThemeName{Введение в контейнеризацию}
+\edef\tlThemeNumberLocal{4}
+\edef\tlThemeNumberGlobal{4}
+
+
+%\documentclass[10pt, handout]{beamer}
+%\setbeameroption{show notes}
+
+%\documentclass[10pt, a4paper]{article}
+%\usepackage{beamerarticle}
+
+
+
+\input{include/preambule.tex}
+
+
+\usepackage{xeCJK}
+\setCJKmainfont{Yu Gothic UI}  %проверить на других ОС  
+
+
+\graphicspath{{Images/}{Images/\jobname/}}
+
+\date{\today}
+
+\renewcommand{\LectionNumber}{\tlThemeNumberGlobal}
+\renewcommand{\LectionTheme}{Тема \tlThemeNumberGlobal \\ \tlThemeName}
+\title{\LectionTheme}
+\subtitle{\tlCourse}
+
+
+\usepackage{fancyvrb}
+\usepackage{minted}
+
+
+\usetikzlibrary {shapes.geometric}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{trees}
+
+\tikzset{	bblock/.style 	= {draw, minimum width=8em, minimum height=2em, text height=1.5ex,text depth=0.25ex},
+	io/.style 		= {bblock, trapezium, trapezium left angle=70, trapezium right angle=110},
+	op/.style 		= {bblock, rectangle}, 
+	if/.style		= {bblock, diamond},
+	terminator/.style		= {bblock, rounded rectangle},
+	portal/.style 	={bblock,circle,minimum size=3em},
+}
+
+\usepackage{cancel}
+
+% Source - https://tex.stackexchange.com/a/23094
+% Posted by egreg
+% Retrieved 2026-02-16, License - CC BY-SA 3.0
+
+\newcommand*{\fvtextcolor}[2]{\textcolor{#1}{#2}}
+\newcommand*{\tc}[2]{\textcolor{#1}{#2}}
+
+\DefineVerbatimEnvironment{VerbatimCmd}{Verbatim}{
+	bgcolor=black,
+	tabsize=4,
+	formatcom=\color{white},
+	gobble=2,
+	fontsize=\small,
+	commandchars=!\{\},
+	xleftmargin=0em,
+	frame=single,
+	framerule=0pt,
+	rulecolor=\color{red},
+	framesep=1em,
+	fillcolor=\color{black}
+}
+
+
+\begin{document}
+	 
+	\mode<presentation>
+	{
+		\input{include/template.tex}	
+	}
+	
+	
+
+
+\if 0  %====================================================================================
+
+\fi %==========================================================================
+
+\QRFRAME
+	
+
+	
+\mode<presentation>
+{	
+	
+\frame[plain, c]{\maketitle}
+	
+	
+}
+
+
+
+\mode<article>
+{
+	\begin{center}
+		
+		\Large
+		
+		\title
+		
+		\LectionTheme
+	\end{center}
+}
+	
+\section{Задача контейнеризации}
+
+\begin{frame}
+	\tableofcontents
+	\sectionpage
+\end{frame}
+
+\begin{frame}\frametitle{Проблемы традиционной разработки}
+	
+	\begin{alertblock}{<<А у меня всё работает!>> \Verb|¯\_(ツ)_/¯|, <<Machine-Driven Development>>}
+		Конфигурация оборудования и программного обеспечения на компьютере разработчика и пользователя почти гарантированного будет различаться. 
+		
+		\hyperlink{f:iwomm}{\color{cyan}Мемчики}\label{ref:tomemes}
+	\end{alertblock}
+	
+	\pause
+	
+	\begin{alertblock}{<<Matrix from Hell>>, <<Dependency Hell>>,<<Dependency swamp>>, <<DLL Hell>>}
+		Программа требует библиотеки, которые требуют библиотеки, которые требуют ... \\
+		В сложных проектах часто возникают конфликты библиотек и зависимостей.  
+		
+		\hyperlink{f:electro}{\color{cyan}\itshape Пример из жизни}\label<2>{ref:toelectro}
+	\end{alertblock}
+	
+	\pause
+	
+	\begin{alertblock} {<<Snowflake-server>>}
+		Многие готовые решения крайне сложны в развертывании и настройке, особенно новичкам. \\
+		\itshape Пример --- сервер разворачивается по мануалу из 87 шагов, к которому боятся прикоснуться, потому что «он держится на соплях и заклинаниях».
+	\end{alertblock}
+	
+	
+\end{frame}
+
+\begin{frame}\frametitle{Как теперь жить?}
+	
+	Способы изоляции:
+	\begin{itemize}
+		\item<1-> Выделенные сервера
+		\item<2-> Гипервизоры
+		\item<3-> Контейнеры
+	\end{itemize}
+	
+	\begin{alertblock}<2->{Виртуальная машина ---}
+		это программная (или логическая) копия физического компьютера. Она эмулирует аппаратное обеспечение и позволяет запускать внутри себя гостевую операционную систему так, как будто та работает на реальном «железе».
+	\end{alertblock}
+
+	\begin{alertblock}<2->{Гипервизор --- }
+		Гипервизор --- это программный слой, который создаёт и запускает виртуальные машины. Он позволяет одной физической компьютерной системе («хосту») разделить свои ресурсы между несколькими изолированными средами.
+	\end{alertblock}
+	
+	
+	
+	\begin{alertblock}<3->{	Контейнер ---}
+		 это легковесная, изолированная среда для запуска приложений, которая использует ядро хостовой операционной системы, а не эмулирует аппаратное обеспечение.
+	\end{alertblock}
+	
+	
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Виды гипервизоров}
+	\begin{columns}[T]
+		\edef\colA{0.5}
+		\begin{column}<2>{\colA\linewidth}
+			%Колнка1
+			
+			\hfill%
+			\begin{tikzpicture}
+				[box/.style={draw, 
+					rounded corners=3pt, 
+					align=center},
+				colbox/.style={draw=#1,fill=#1!30!white}
+				]\small
+				
+				\matrix (sch) [matrix of nodes, 
+				nodes ={text width = 1.5cm}, 
+				row 1/.style={nodes=box}, 
+				row 2/.style={nodes=box}, 
+				row 3/.style={nodes=box,very thick}, 
+				column sep = 1em, 
+				row sep = 1ex,
+				execute at end cell = \strut,
+				execute at empty cell = \strut,	
+				nodes in empty cells	
+				] {
+					|[colbox=red]|Прог 1  &  |[colbox=ForestGreen]| Прог 2  &  |[colbox=blue]|Прог 3 \\
+					|[colbox=red]|Зав 1 &  |[colbox=ForestGreen]|Зав 2  &  |[colbox=blue]|Зав 3 \\
+					|[colbox=red]|ОС 1 &  |[colbox=ForestGreen]|ОС 2  & |[colbox=blue]| ОС 3 \\
+					\strut  &  \strut & \strut  \\
+					\strut & \strut & \strut \\
+					\strut & \strut & \strut \\
+				};
+				
+				%				\draw node[box, colbox=magenta, inner sep = 0pt, fit=(sch-4-1)(sch-4-3)] (frame) {};			
+				%				\node at (frame.base) {Гипервизор (Type 2)};
+				
+				\begin{scope}
+					\node[inner sep = 0pt, fit=(sch-4-1)(sch-5-3)] (frame) {};	
+					\clip (frame.south west) -- (frame.north west) -- (frame.north east) -- cycle;					
+					\node[box, colbox=orange, inner sep = 0pt, fit=(sch-4-1)(sch-5-3)] (frame) {};	
+				\end{scope}
+				
+				\begin{scope}
+					\node[inner sep = 0pt, fit=(sch-4-1)(sch-5-3)] (frame) {};	
+					\clip (frame.north east) -- (frame.south east) -- (frame.south west) -- cycle;					
+					\node[box, colbox=magenta, inner sep = 0pt, fit=(sch-4-1)(sch-5-3)] (frame) {};	
+				\end{scope}
+				
+				\node at (frame.base) {Гипервизор (Type 1)};
+				
+				\node[box, colbox=cyan, inner sep = 0pt, fit=(sch-6-1)(sch-6-3)] (frame) {};					
+				\node at (frame.base) {Аппаратное обеспечение};
+				
+				\draw[red] node[fit=(sch-1-1)(sch-3-1), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {ВМ1};
+				
+				\draw[ForestGreen] node[fit=(sch-1-2)(sch-3-2), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {ВМ2};
+				
+				
+				\draw[blue] node[fit=(sch-1-3)(sch-3-3), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {ВМ3};
+				
+				
+			\end{tikzpicture}%
+			\hfill{}
+						
+			
+			\textbf{Type 1}. Гипервизоры «голого железа» (<<bare metal>>). Является миниатюрной операционной системой или работает на низком уровне. 
+		
+			\begin{itemize}
+				\item VMware ESXi
+				\item Microsoft Hyper-V
+				\item KVM (Kernel-based Virtual Machine)
+				\item Xen
+			\end{itemize}
+		\end{column}
+		\begin{column}<1->{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			
+			\hfill%
+			\begin{tikzpicture}
+				[box/.style={draw, 
+					rounded corners=3pt, 
+					align=center},
+				colbox/.style={draw=#1,fill=#1!30!white}
+				]\small
+				
+				\matrix (sch) [matrix of nodes, 
+				nodes ={text width = 1.5cm}, 
+				row 1/.style={nodes=box}, 
+				row 2/.style={nodes=box}, 
+				row 3/.style={nodes=box,very thick}, 
+				column sep = 1em, 
+				row sep = 1ex,
+				execute at end cell = \strut,
+				execute at empty cell = \strut,	
+				nodes in empty cells	
+				] {
+					|[colbox=red]|Прог 1  &  |[colbox=ForestGreen]| Прог 2  &  |[colbox=blue]|Прог 3 \\
+					|[colbox=red]|Зав 1 &  |[colbox=ForestGreen]|Зав 2  &  |[colbox=blue]|Зав 3 \\
+					|[colbox=red]|ОС 1 &  |[colbox=ForestGreen]|ОС 2  & |[colbox=blue]| ОС 3 \\
+					\strut  &  \strut & \strut  \\
+					\strut & \strut & \strut \\
+					\strut & \strut & \strut \\
+				};
+				
+				\draw node[box, colbox=magenta, inner sep = 0pt, fit=(sch-4-1)(sch-4-3)] (frame) {};			
+				\node at (frame.base) {Гипервизор (Type 2)};
+				
+				\node[box, colbox=orange, inner sep = 0pt, fit=(sch-5-1)(sch-5-3)] (frame) {};				
+				\node at (frame.base) {Хостовая ОС};
+				
+				\node[box, colbox=cyan, inner sep = 0pt, fit=(sch-6-1)(sch-6-3)] (frame) {};					
+				\node at (frame.base) {Аппаратное обеспечение};
+				
+				\draw[red] node[fit=(sch-1-1)(sch-3-1), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {ВМ1};
+				
+				\draw[ForestGreen] node[fit=(sch-1-2)(sch-3-2), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {ВМ2};
+				
+				
+				\draw[blue] node[fit=(sch-1-3)(sch-3-3), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {ВМ3};
+				
+				
+			\end{tikzpicture}%
+			\hfill{}
+			
+			\textbf{Type 2}. Гипервизоры «хостовые». Запускаются как обычное приложение внутри уже установленной операционной системы (хоста).
+			
+			\begin{itemize}
+				\item Oracle VirtualBox
+				\item VMware Workstation 
+				\item QEMU (*)
+				\item Parallels Desktop 
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	
+	
+	
+	
+
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]\frametitle{Контейнеризация (Linux only!)}
+	
+	\begin{columns}[]
+		\edef\colA{0.4}
+		\begin{column}{\colA\linewidth}
+			%Колнка1
+			\hfill\begin{tikzpicture}
+				[box/.style={draw, 
+					rounded corners=3pt, 
+					align=center},
+				colbox/.style={draw=#1,fill=#1!30!white}
+				]\small
+				
+				\matrix (sch) [matrix of nodes, 
+				nodes ={text width = 1.5cm}, 
+				row 1/.style={nodes=box}, 
+				row 2/.style={nodes=box}, 
+				column sep = 1em, 
+				row sep = 1ex,
+				execute at end cell = \strut,
+				execute at empty cell = \strut,	
+				nodes in empty cells	
+				] {
+					|[colbox=red]|Прог 1  &  |[colbox=ForestGreen]| Прог 2  &  |[colbox=blue]|Прог 3 \\
+					|[colbox=red]|Зав 1 &  |[colbox=ForestGreen]|Зав 2  &  |[colbox=blue]|Зав 3 \\
+					\strut  &  \strut & \strut  \\
+					\strut  &  \strut & \strut  \\
+					\strut & \strut & \strut \\
+					\strut & \strut & \strut \\
+				};
+				
+				
+				\node[box, colbox=magenta, inner sep = 0pt, fit=(sch-3-1)(sch-3-3)] (frame) {};				
+				\draw  (frame.base)  node {Контейнерный рантайм};
+				
+				\node[box, colbox=orange, inner sep = 0pt, fit=(sch-4-1)(sch-5-3)] (frame) {};				
+				\draw  (frame.base) ++(0,-5pt) node {Хостовая ОС};
+				
+				\node[box, colbox=orange, inner sep = -2pt, fit=(sch-4-1)(sch-4-3)] (frame) {};				
+				\node at (frame.base) {Механизмы контейнеризации};
+				
+				\node[box, colbox=cyan, inner sep = 0pt, fit=(sch-6-1)(sch-6-3)] (frame) {};					
+				\node at (frame.base) {Аппаратное обеспечение};
+				
+				\draw[red] node[fit=(sch-1-1)(sch-2-1), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {К1};
+				
+				\draw[ForestGreen] node[fit=(sch-1-2)(sch-2-2), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {К2};
+				
+				
+				\draw[blue] node[fit=(sch-1-3)(sch-2-3), draw, inner sep = 2pt] (frame) {} (frame.north) node [above] {К3};				
+				
+			\end{tikzpicture}\hfill{}
+		\end{column}
+		\begin{column}{\fpeval{1-\colA}\linewidth}
+			%Колнка2
+			\textbf{Механизмы контейнеризации:}
+			\begin{itemize}
+				\item \textbf{Namespaces} --- даёт изоляцию (видимость). Создаёт иллюзию, что контейнер --- это единственная система
+				\item \textbf{Cgroups} (Control groups) --- ограничитель ресурсов
+				\item \textbf{Chroot / pivot\_root} --- даёт изоляцию файловой системы.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	
+	\pause
+	
+	\begin{alertblock}{Контейнерный рантайм (container runtime) --- }
+		это ПО, которое отвечает за запуск и остановку контейнеров.
+	\end{alertblock}
+	
+	\begin{itemize}
+		\item \textbf{Низкоуровневый} (low-level runtime) --- работает напрямую с механизмами контейнеризации. \textit{(runc, crun) }
+		\item \textbf{Высокоуровневый} (high-level runtime) --- работает с образами, сетями, томами, хранилищами. Для запуска контейнера вызывает низкоуровневый рантайм. \textit{(Docker Engine, containerd, CRI-O, Podman) }
+	\end{itemize}
+	
+\end{frame}
+
+\section{Docker}
+
+\begin{frame}
+	\tableofcontents
+	\sectionpage
+	
+	\medskip
+	
+	\hfill\includegraphics[width=5cm]{Docker_(container_engine)_logo.eps}\hfill{}
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Установка Docker}
+	
+	\begin{varwidth}{\textwidth}
+		
+		\textbf{Инструкции по установке Docker}
+		
+		\href{https://docs.docker.com/engine/install/}{\color{magenta}https://docs.docker.com/engine/install/}
+		
+	\end{varwidth}
+	\qrcode[height=2.3em]{https://docs.docker.com/engine/install/}
+	
+	
+	
+	\smallskip
+	
+	\begin{cmdcode}
+	:~$  @\color{orange} docker --version@
+	Docker version 29.4.3, build 055a478	
+	\end{cmdcode}
+	
+	\medskip
+	
+	\textbf{Структура команды docker:}
+	
+	\Verb|docker [контекст] [опции_глобальные]|\\
+	\Verb|КОМАНДА [аргументы_команды] [опции_команды]|
+	\Verb|[ОБРАЗ/КОНТЕЙНЕР/...] [команда_в_контейнере] [аргументы_команды_контейнера]|
+	
+	\medskip
+	
+	\textbf{Или более просто:}
+	
+	\Verb|docker КОМАНДА [ОБРАЗ/КОНТЕЙНЕР/...] [команда_в_контейнере]|
+	
+	\medskip
+	
+	\textbf{Примеры:}
+	
+	\Verb|docker run -d --name web -p 8080:80 nginx:alpine|
+	\Verb|docker exec -it my_container bash -c "echo Hello && ls -la"|
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Hello from Docker!}
+	
+	\begin{cmdcode}
+		:~$ @\color{orange} sudo docker run hello-world@
+		
+		Unable to find image 'hello-world:latest' locally
+		latest: Pulling from library/hello-world
+		4f55086f7dd0: Pull complete
+		d5e71e642bf5: Download complete
+		Digest: sha256:f9078146db2e05e794366b1bfe584a14ea6317f44027d10ef7dad65279026885
+		Status: Downloaded newer image for hello-world:latest
+		
+		Hello from Docker!
+		This message shows that your installation appears to be working correctly.
+		
+		To generate this message, Docker took the following steps:
+		1. The Docker client contacted the Docker daemon.
+		2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+		(amd64)
+		3. The Docker daemon created a new container from that image which runs the
+		executable that produces the output you are currently reading.
+		4. The Docker daemon streamed that output to the Docker client, which sent it
+		to your terminal.
+		
+		...
+	\end{cmdcode}
+	
+\end{frame}
+
+\begin{frame}\frametitle{Основные определения Docker (1/2)}
+	
+	\begin{alertblock}{Образ (image) --- }
+		неизменяемый шаблон (слепок), содержащий всё необходимое для запуска приложения: операционную систему, код, библиотеки, переменные окружения и настройки. Он только для чтения.
+	\end{alertblock}
+	
+	\begin{alertblock}{Контейнер (сontainer) --- }
+		запущенный экземпляр образа. Это изолированный процесс (или группа процессов) на хосте, который получил свою копию файловой системы из образа, собственную сеть и ограниченные ресурсы. Несколько контейнеров могут использовать один и тот же образ, экономя дисковое пространство и память.
+	\end{alertblock}
+	
+	\begin{alertblock}{Docker Hub --- }
+		это облачный реестр (container registry), предназначенный для хранения, совместного использования и распространения Docker-образов. Это официальный и самый популярный сервис такого рода от компании Docker (но не единственный).
+	\end{alertblock}
+	
+\end{frame}
+
+\begin{frame}\frametitle{Основные определения Docker (2/2)}
+	
+	
+	\begin{alertblock}{Docker Client (CLI) --- }
+		Программа, с которой напрямую взаимодействует пользователь. Принимает команды (docker run, docker ps), преобразует их в HTTP-запросы и отправляет демону.
+	\end{alertblock}
+	
+	\begin{alertblock}{Docker Daemon (dockerd) --- }
+		Фоновый процесс (демон), который фактически выполняет команды: запускает контейнеры, управляет образами, сетями, томами.
+	\end{alertblock}
+	
+	\begin{alertblock} {Том (volume) ---}
+		это специальная директория (или область хранения) вне объединённой файловой системы контейнера, которая позволяет сохранять данные даже после удаления контейнера.
+	\end{alertblock}
+	
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]\frametitle{Gсс на Docker Hub}
+	
+	\href{https://hub.docker.com/_/gcc}{\color{magenta}https://hub.docker.com/\_/gcc}
+	
+	\hfill\fbox{\IG[0.7]{gcc_docker.jpg}}\hfill{}
+	
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]\frametitle{Управление образами}
+	
+	\begin{cmdcodefootnotesize}
+		:~$ @\color{orange}sudo docker image pull gcc@
+		Using default tag: latest
+		latest: Pulling from library/gcc
+		373364b63187: Pull complete
+		7df9e11c80c9: Pull complete
+		...
+		Digest: sha256:1cfa8769230debf43594ee1b48bc642f9bead8d479f9926bc61d3014bdf3ecc8
+		Status: Downloaded newer image for gcc:latest
+		docker.io/library/gcc:latest
+		
+		:~$ @\color{orange}sudo docker image ls@
+		i Info →   U  In Use
+		IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+		gcc:latest           1cfa8769230d       2.21GB          577MB
+		hello-world:latest   f9078146db2e       25.9kB         9.49kB    U 
+		@\pause@
+		:~$ @\color{orange}sudo docker image rm gcc:latest@
+		Untagged: gcc:latest
+		Deleted: sha256:1cfa8769230debf43594ee1b48bc642f9bead8d479f9926bc61d3014bdf3ecc8	
+		
+		:~$ @\color{orange}sudo docker image ls@
+		i Info →   U  In Use
+		IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+		hello-world:latest   f9078146db2e       25.9kB         9.49kB    U
+	\end{cmdcodefootnotesize}
+	
+\end{frame}
+
+\begin{frame}\frametitle{Команды управления образами}
+	
+	\begin{alertblock}{docker image * ---}
+		группа команд для управления образами
+	\end{alertblock}
+	
+	\small
+	\begin{tabularx}{\linewidth}{>{\ttfamily}p{4cm}X}
+		\textbf{\rmfamily Команда} & \textbf{Описание} \\
+		\hline
+		\textbf{ls} & Показать список образов \\
+		\textbf{ls} -q & Показать только ID образов \\
+		\textbf{pull} {[}ОБРАЗ{]} & Скачать образ из реестра \\
+		\textbf{push} {[}ОБРАЗ{]} & Загрузить образ в реестр \\
+		\textbf{build} -t {[}ИМЯ{]} {[}ПУТЬ{]} & Собрать образ из Dockerfile \\
+		\textbf{build} -f {[}ФАЙЛ{]} -t {[}ИМЯ{]} {[}ПУТЬ{]} & Собрать образ с указанием Dockerfile \\
+		\textbf{rm} {[}ОБРАЗ{]} & Удалить образ \\
+		\textbf{tag} {[}ОБРАЗ{]} {[}НОВЫЙ\_ТЕГ{]} & Присвоить тег образу \\
+		\textbf{inspect} {[}ОБРАЗ{]} & Показать подробную информацию об образе \\
+		\textbf{history} {[}ОБРАЗ{]} & Показать историю слоёв образа \\
+		\textbf{save} -o {[}ФАЙЛ{]} {[}ОБРАЗ{]} & Сохранить образ в tar-архив \\
+		\textbf{load} -i {[}ФАЙЛ{]} & Загрузить образ из tar-архива \\
+		\textbf{commit} {[}КОНТЕЙНЕР{]} {[}НОВЫЙ\_ОБРАЗ{]} & Создать образ из изменённого контейнера \\
+		\textbf{import} {[}ФАЙЛ{]} {[}ОБРАЗ{]} & Импортировать файловую систему в образ \\
+		\textbf{prune} & Удалить все неиспользуемые образы \\
+		\textbf{prune} -a & Удалить все неиспользуемые образы (включая не тегированные) \\
+	\end{tabularx}
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Скачаем компиляторы С++}
+	
+	\begin{cmdcodefootnotesize}
+		:~$ @\color{orange}sudo docker image pull gcc:16.1@
+		16.1: Pulling from library/gcc
+		...
+		Digest: sha256:1cfa8769230debf43594ee1b48bc642f9bead8d479f9926bc61d3014bdf3ecc8
+		Status: Downloaded newer image for gcc:16.1
+		docker.io/library/gcc:16.1
+		
+		:~$ @\color{orange}sudo docker image pull silkeh/clang:20-buiiseye@
+		Error response from daemon: failed to resolve reference "docker.io/silkeh/clang:20-buiiseye": docker.io/silkeh/clang:20-buiiseye: not found
+		
+		:~$ @\color{orange}sudo docker image pull silkeh/clang:20-bullseye@
+		20-bullseye: Pulling from silkeh/clang
+		...
+		Digest: sha256:7789959b8e51412e66cefb10135bdefa02a015050a3bcde56d097c07a167559b
+		Status: Downloaded newer image for silkeh/clang:20-bullseye
+		docker.io/silkeh/clang:20-bullseye
+		
+		:~$ @\color{orange}sudo docker image ls@
+		i Info →   U  In Use
+		IMAGE                      ID             DISK USAGE   CONTENT SIZE   EXTRA
+		gcc:16.1                   1cfa8769230d       2.21GB          577MB
+		hello-world:latest         f9078146db2e       25.9kB         9.49kB    U
+		silkeh/clang:20-bullseye   7789959b8e51        1.8GB          395MB
+	\end{cmdcodefootnotesize}
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Используем образы}
+	
+	\begin{cmdcodefootnotesize}
+		:~$ @\color{orange}cat prog.cpp@
+		
+		#include <iostream>		
+		int main()
+		{
+			std::cout << "Hello!" <<std::endl;
+			return 0;
+		}
+		
+		:~$ @\color{orange}sudo docker run --rm -v .:/tmp -w /tmp gcc:16.1 g++ -o prog prog.cpp@
+		:~$ @\color{orange}./prog@
+		Hello!
+		
+		:~$ @\color{orange}sudo docker run --rm -v .:/tmp -w /tmp 7789959b8e51 g++ -o prog prog.cpp@
+		:~$ @\color{orange}./prog@
+		Hello!
+	\end{cmdcodefootnotesize}
+	
+\end{frame}
+
+\begin{frame}\frametitle{docker run}
+	
+	\small\sloppy
+	\begin{tabularx}{\linewidth}{>{\ttfamily\bfseries}lp{5cm}>{\ttfamily}X}
+		\textbf{\rmfamily Ключ} & \textbf{Описание} & \textbf{\textrm{Пример} docker run ...} \\\hline
+		-it & Интерактивный режим (обычно с bash/sh) &   -it ubuntu bash \\
+		-d & Запуск контейнера в фоне (detach) &   -d nginx \\
+		--name & Присвоить контейнеру понятное имя &   --name my\_db mysql \\
+		-p & Пробросить порт хоста в порт контейнера &   -p 8080:80 nginx \\
+		-v, --volume & Монтировать том или папку хоста &   -v /my/data:/app/data ubuntu \\
+		--rm & Автоматически удалять контейнер после остановки &   --rm alpine echo "hi" \\
+		-e, --env & Передать переменную окружения &   -e DB\_PASS=123 postgres \\
+		--restart & Задать политику перезапуска &   --restart always redis \\
+		-m, --memory & Ограничить максимальное использование RAM &   -m 512m node\_app \\
+		-w, --workdir & Установить рабочую директорию внутри контейнера &   -w /app node npm start \\
+		--cpus & Ограничить использование CPU (в ядрах) &   --cpus=1.5 my\_app \\
+		--user, -u & Запустить процесс от указанного UID/GID &   -u 1000:1000 ubuntu \\
+		--read-only & Сделать файловую систему контейнера только для чтения &   --read-only nginx \\
+	\end{tabularx}
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Проникнем в контейнер (1/2)}
+	
+	Терминал 1
+	
+	\begin{minipage}{0.8\linewidth}
+		\begin{cmdcodefootnotesize}[escapeinside=яя]
+			:~$ я\color{orange}sudo docker run -it --rm -v .:/tmp -w /tmp gcc:16.1 bash я
+			
+			root@eddd12686841:/tmp# я\color{orange}ls я
+			prog  prog.cpp
+			
+			root@eddd12686841:/tmp# я\color{orange}pwd я
+			/tmp
+		\end{cmdcodefootnotesize}
+	\end{minipage}
+	
+	\hfill Терминал 2\\	
+	\hspace*{\fill}\begin{minipage}{0.8\linewidth}
+		\begin{cmdcodefootnotesize}[escapeinside=яя]
+			:~$ я\color{orange}sudo docker ps я
+			CONTAINER ID   IMAGE      COMMAND   CREATED          STATUS          PORTS     NAMES
+			eddd12686841   gcc:16.1   "bash"    39 seconds ago   Up 38 seconds             zealous_khorana
+		\end{cmdcodefootnotesize}
+	\end{minipage}
+	
+	
+	\pause
+	
+	Терминал 1
+	
+	\begin{minipage}{0.8\linewidth}
+		\begin{cmdcodefootnotesize}[escapeinside=яя]
+			root@eddd12686841:/tmp# я\color{orange}touch file1 я
+		\end{cmdcodefootnotesize}
+	\end{minipage}
+	
+	\hfill Терминал 2\\	
+	\hspace*{\fill}\begin{minipage}{0.8\linewidth}
+		\begin{cmdcodefootnotesize}[escapeinside=яя]
+			:~$ я\color{orange} ls я
+			file1  prog  prog.cpp
+		\end{cmdcodefootnotesize}
+		
+	
+	\end{minipage}
+	
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Проникнем в контейнер (2/2) }
+	
+	Терминал 1\\	
+	\begin{minipage}{0.8\linewidth}
+		\begin{cmdcodefootnotesize}[escapeinside=яя]
+			root@eddd12686841:/tmp# я\color{orange} g++ -o prog2 prog.cpp я
+			
+			root@eddd12686841:/tmp# я\color{orange}./prog2 я
+			Hello!
+			
+			root@eddd12686841:/tmp# я\color{orange}exit я
+			exit
+		\end{cmdcodefootnotesize}
+	\end{minipage}
+	
+	\hfill Терминал 2 \\	
+	\hspace*{\fill}\begin{minipage}{0.8\linewidth}
+		\begin{cmdcodefootnotesize}[escapeinside=яя]
+			:~$ я\color{orange} sudo docker ps я
+			CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+			
+			:~$ я\color{orange} ./prog2 я
+			Hello!
+		\end{cmdcodefootnotesize}
+		
+		
+	\end{minipage}
+	
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]\frametitle{Фоновый запуск контейнера}
+	
+	\begin{cmdcodefootnotesize}
+		:~$ @\color{orange}sudo docker run -d --rm -p 8000:80 nginx@
+		...
+		Status: Downloaded newer image for nginx:latest
+		299be21624064dfae163281b2450570fc20537624ac73fb1265bccae25682282
+		L:~$ @\color{orange}sudo docker ps@
+		CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                
+		299be2162406   nginx     "/docker-entrypoint.…"   12 seconds ago   Up 12 seconds   0.0.0.0:8000->80/tcp
+	\end{cmdcodefootnotesize}
+	
+	\hfill\IG[0.6]{nginx.jpg}\hfill{}
+	
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Docker, зачем так сложно?}
+	
+	\hfill%
+	\begin{tikzpicture}[
+		box/.style={draw=#1,fill=#1!30!white, rounded corners = 3pt, font=\ttfamily},
+		arr/.style={-Latex},
+		node distance=1cm and 2cm,
+		arrtext/.style={font=\small},
+		]
+		
+		\draw node[inner sep = 0pt, outer sep=0pt] (man)
+		{
+			\tikz[scale=1.5]{
+				
+				\draw circle (3pt);
+				\coordinate (A) at (0, -3pt);
+				\coordinate (B) at (0, -13pt);
+				\draw (A) -- (B);
+				\draw (B) -- +(250:10pt);
+				\draw (B) -- +(290:10pt);
+				\draw (A) ++(down:3pt) -- ++(180:5pt);
+				\draw (A) ++(down:3pt) -- ++(0:5pt);
+			}
+		};
+		
+		\draw (man.south) node[below] {Пользователь};
+		
+		\node[box=red, right=of man] (docker) {docker\strut};
+		\node[box=ForestGreen, right=of docker] (dockerd) {dockerd\strut};
+		\node[box=blue, right=of dockerd] (containerd) {containerd\strut};
+		\node[box=magenta, below=of containerd] (shim) {containerd-shim\strut};
+		\node[box=orange, left=of shim] (runc) {runc\strut};
+		
+		\draw[arr] (man) -- (docker) node[midway, below] {CLI};
+		\draw[arr] (docker) -- (dockerd) node[midway, below, arrtext] {HTTP} node[midway, below, yshift=-1em ,font=\ttfamily\scriptsize] {/var/run/docker.sock};
+		\draw[arr] (docker) -- (dockerd) ;
+		\draw[arr] (dockerd) -- (containerd) node[midway, below, arrtext] {gRPC} node[midway, below, yshift=-1em ,font=\ttfamily\scriptsize] {/run/containerd/containerd.sock};
+		\draw[arr] (containerd) -- (shim) node [midway, right, arrtext] {ttRPC} ;
+		\draw[arr] (shim) -- (runc) node [midway, below, arrtext] {Вызов};
+		
+	\end{tikzpicture}%
+	\hfill{}
+	
+	
+	
+	\vspace{0.5em}
+	\begin{itemize}
+		\item<+-> \texttt{docker (CLI)} --- интерпретирует команды пользователя и отправляет их через \texttt{/var/run/docker.sock} демону \texttt{dockerd}.
+		\item<.-> \texttt{dockerd} --- управляет контейнерами, сетями, томами и образами, взаимодействуя с \texttt{containerd} по протоколу \texttt{gRPC}.
+		\item<+-> \texttt{containerd} --- высокоуровневый рантайм; принимает задачи от \texttt{dockerd} и запускает \texttt{containerd-shim}.
+		\item<.-> \texttt{containerd-shim} --- процесс-посредник для одного контейнера; переживает перезапуск \texttt{containerd}.
+		\item<.-> \texttt{runc} --- низкоуровневый рантайм; через \texttt{fork / exec} создаёт Namespaces, Cgroups и запускает процесс контейнера, после чего завершается, оставляя \texttt{shim} родителем.
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+\section*{Приложения}
+
+
+\begin{frame}
+	
+\hfill\Huge Приложения \hfill {}	
+	
+\end{frame}
+
+
+\begin{frame}\frametitle{Не надо так делать}\label{f:electro}
+	\centering
+	\IG[0.4]{PXL_20260510_222935555.jpg}
+	
+	\hfill\hyperlink{ref:toelectro}{\color{cyan}{К лекции}}
+\end{frame}
+
+\begin{frame}\frametitle{It's works on my machine}\label{f:iwomm}
+
+\centering%
+\resizebox{!}{7.5cm}{\IG{it-works-on-my-machine (Medium).jpeg}}\hspace{3pt}%
+\resizebox{!}{7.5cm}{%
+	\begin{minipage}[b]{\textwidth}
+		\IG{say-it-again (Medium).jpeg}\\[7pt]
+		\IG{images.jpg}
+	\end{minipage}%
+}\hspace{3pt}%
+\resizebox{!}{7.5cm}{%
+	\begin{minipage}[b]{\textwidth}
+		\IG{images (1).jpg} \\[10pt]
+		\IG{unnamed.jpg}
+	\end{minipage}%
+}
+
+\hfill\hyperlink{ref:tomemes}{\color{cyan}К лекции}
+
+	
+\end{frame}
+
+
+
+
+
+	
+\end{document}
