@@ -1,7 +1,7 @@
 # Материалы к курсу лекций по дисциплине "Промышленное программирование"
 
 
-Pdf-версии презентаций вынесены на ветку (pdfs)[https://github.com/Gavreg/Industrial-programming/tree/pdfs]
+Pdf-версии презентаций вынесены на ветку [pdfs](https://github.com/Gavreg/Industrial-programming/tree/pdfs)
 
 Собрано на Windows 11 командой 
 ```
