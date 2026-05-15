@@ -6,7 +6,6 @@
 !Images/*
 !*.bat
 !*.tex
-!*.pdf
 !*.eps
 !*.txt
 !*.md
