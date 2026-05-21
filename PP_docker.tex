@@ -96,7 +96,7 @@
 
 \if 0  %====================================================================================
 
-
+\fi %==========================================================================
 
 \QRFRAME
 	
@@ -405,7 +405,7 @@
 	
 \end{frame}
 
-\section[Docker run]{Docker. Запуск и управление образами}
+\section{Docker}
 
 \begin{frame}
 	\tableofcontents
@@ -768,38 +768,6 @@
 \end{frame}
 
 
-
-
-\fi %==========================================================================
-
-
-
-\begin{frame}[fragile]\frametitle{Старт и стоп контейнеров}
-	
-	\begin{cmdcode}
-		:~$ @\color{orange}sudo docker run -d -p 8000:80  nginx@
-		6455970d7e4e67ea07eb6acf39b2d0f7182e910fad22d41fa07416d7a40cff4f
-		L:~$ @\color{orange}sudo docker ps@
-		CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                     NAMES
-		6455970d7e4e   nginx     "/docker-entrypoint.…"   8 seconds ago   Up 8 seconds   0.0.0.0:8000->80/tcp, [::]:8000->80/tcp   romantic_burnell
-		@\pause@
-		:~$ @\color{orange}sudo docker stop 6455@
-		6455
-		:~$ @\color{orange}sudo docker ps -a@
-		CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                      PORTS     NAMES
-		6455970d7e4e   nginx         "/docker-entrypoint.…"   38 seconds ago   Exited (0) 10 seconds ago             romantic_burnell
-		9eedaad4f1f9   hello-world   "/hello"                 8 days ago       Exited (0) 8 days ago                 nervous_bhabha
-		@\pause@
-		:~$ @\color{orange}sudo docker start 6455@
-		6455
-		:~$ @\color{orange}sudo docker ps@
-		CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS         PORTS                                     NAMES
-		6455970d7e4e   nginx     "/docker-entrypoint.…"   About a minute ago   Up 6 seconds   0.0.0.0:8000->80/tcp, [::]:8000->80/tcp   romantic_burnell
-	\end{cmdcode}
-	
-\end{frame}
-
-
 \begin{frame}[fragile]\frametitle{Docker, зачем так сложно?}
 	
 	\hfill%
@@ -858,35 +826,6 @@
 	
 \end{frame}
 
-
-
-
-
-\section[Dockerfile]{Docker. Создание собственных образов}
-\begin{frame}\frametitle{}
-	\tableofcontents
-	
-	\sectionpage	
-\end{frame}
-
-
-\begin{frame}\frametitle{dockerfile}
-	
-	//механизм работы docker build
-	
-	//определение dockerfile
-	
-	
-	
-\end{frame}
-
-\begin{frame}\frametitle{Инструкции DF}
-	
-	\begin{tabularx}{\linewidth}{llX}
-	\bfseries \centering Инструкция & \centering Описание & \centering \arraybackslash Пример\\ \hline	
-	\end{tabularx}
-	
-\end{frame}
 
 
 \section*{Приложения}
