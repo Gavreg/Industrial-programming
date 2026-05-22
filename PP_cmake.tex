@@ -10,57 +10,18 @@
 }
 
 
-
-\edef\tlCourse{Промышленное программирование}
-\edef\tlPartName{Раздел 1. Разработка модульных программ}
-\edef\tlPartNumber{1}
-\edef\tlThemeName{Системы сборки проектов на языке С/С++}
-\edef\tlThemeNumberLocal{1}
-\edef\tlThemeNumberGlobal{1}
-
-
-%\documentclass[10pt, handout]{beamer}
-%\setbeameroption{show notes}
-
-%\documentclass[10pt, a4paper]{article}
-%\usepackage{beamerarticle}
-
 \input{include/preambule.tex}
 
 \graphicspath{{Images/}{Images/\jobname/}}
 
 \date{\today}
 
-\renewcommand{\LectionNumber}{\tlThemeNumberGlobal}
-\renewcommand{\LectionTheme}{Тема \tlThemeNumberGlobal \\ \tlThemeName}
+\input{PP_toc.txt}
+
+\renewcommand{\LectionNumber}{ \lecturenumber}
+\renewcommand{\LectionTheme}{Тема \lecturenumber \\ \lecturename}
 \title{\LectionTheme}
-\subtitle{\tlCourse}
-
-
-\usepackage{fancyvrb}
-\usepackage{minted}
-
-
-\usetikzlibrary {shapes.geometric}
-\usetikzlibrary{shapes.misc}
-\usetikzlibrary{positioning}
-\usetikzlibrary{calc}
-\usetikzlibrary{trees}
-
-\tikzset{	bblock/.style 	= {draw, minimum width=8em, minimum height=2em, text height=1.5ex,text depth=0.25ex},
-	io/.style 		= {bblock, trapezium, trapezium left angle=70, trapezium right angle=110},
-	op/.style 		= {bblock, rectangle}, 
-	if/.style		= {bblock, diamond},
-	terminator/.style		= {bblock, rounded rectangle},
-	portal/.style 	={bblock,circle,minimum size=3em},
-}
-
-% Source - https://tex.stackexchange.com/a/23094
-% Posted by egreg
-% Retrieved 2026-02-16, License - CC BY-SA 3.0
-
-\newcommand*{\fvtextcolor}[2]{\textcolor{#1}{#2}}
-\newcommand*{\tc}[2]{\textcolor{#1}{#2}}
+\subtitle{Промышленное программирование}
 
 
 \begin{document}

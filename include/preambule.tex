@@ -97,6 +97,7 @@
 
 
 \usepackage{tikz}
+\usetikzlibrary{positioning}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
 \usetikzlibrary{decorations}
@@ -363,6 +364,62 @@
 }
 
 
-%===================================================
+%============ РУБРИКАТОР~КУРСА =============================
 
 
+
+\makeatletter
+\newcounter{lec@number}
+\newcounter{lec@globalnumber}
+\newcounter{lec@partnumber}
+
+\setcounter{lec@number}{1}
+\setcounter{lec@globalnumber}{1}
+\setcounter{lec@partnumber}{1}
+
+\edef\@curpart{}
+
+% #1  -  файл лекции
+% #2  -  наименование лекци
+\NewDocumentCommand{\lec}{smm}{
+	\expandafter\edef\csname lec@#2@title\endcsname{#3}
+	\expandafter\edef\csname lec@#2@part\endcsname{\@curpart}
+	\expandafter\edef\csname lec@#2@partnumber\endcsname{\thelec@partnumber}
+	\expandafter\edef\csname lec@#2@number\endcsname{\thelec@number}
+	\expandafter\edef\csname lec@#2@globalnumber\endcsname{\thelec@globalnumber}
+	\IfBooleanF{#1}
+	{
+		\stepcounter{lec@number}
+		\stepcounter{lec@globalnumber}
+	}
+	
+}
+
+\NewDocumentCommand{\lecpart}{sm}{
+	\edef\@curpart{#2}	
+	\setcounter{lec@number}{0}
+	\IfBooleanF{#1}
+	{
+		\stepcounter{lec@partnumber}
+	}
+	
+}
+\NewDocumentCommand{\lecturename}{}{
+	\csname lec@\jobname @title\endcsname
+}
+\NewDocumentCommand{\lecturepart}{}{
+	\csname lec@\jobname @part\endcsname
+}
+
+\NewDocumentCommand{\lecturenumber}{}{
+	\csname lec@\jobname @number\endcsname
+}
+
+\NewDocumentCommand{\lecturegnumber}{}{
+	\csname lec@\jobname @globalnumber\endcsname
+}
+
+\makeatother
+
+
+%=========================================

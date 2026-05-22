@@ -1,29 +1,10 @@
-% !TeX program = xelatex
-% !TeX options = -synctex=1 -interaction=nonstopmode -halt-on-error --shell-escape -8bit
 
 \documentclass[10pt, aspectratio=1610]{beamer}
-%\documentclass{article}
-%\usepackage{beamerarticle}
+
 \mode<article>
 {
 	\usepackage[a4paper]{geometry}
 }
-
-
-
-\edef\tlCourse{Промышленное программирование}
-\edef\tlPartName{}
-\edef\tlPartNumber{0}
-\edef\tlThemeName{Введение}
-\edef\tlThemeNumberLocal{0}
-\edef\tlThemeNumberGlobal{0}
-
-
-%\documentclass[10pt, handout]{beamer}
-%\setbeameroption{show notes}
-
-%\documentclass[10pt, a4paper]{article}
-%\usepackage{beamerarticle}
 
 \input{include/preambule.tex}
 
@@ -31,15 +12,12 @@
 
 \date{\today}
 
-\renewcommand{\LectionNumber}{\tlThemeNumberGlobal}
-\renewcommand{\LectionTheme}{Тема \tlThemeNumberGlobal \\ \tlThemeName}
-\title{\LectionTheme}
-\subtitle{\tlCourse}
+\input{PP_toc.txt}
 
-
-\usepackage{fancyvrb}
-\usepackage{minted}
-
+\renewcommand{\LectionNumber}{ \lecturenumber}
+\renewcommand{\LectionTheme}{Тема \lecturenumber \\ \lecturename}
+\title{\lecturename}
+\subtitle{Промышленное программирование}
 
 
 \begin{document}
