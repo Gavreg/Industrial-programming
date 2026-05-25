@@ -47,6 +47,7 @@
 
 \fi %==========================================================================
 
+
 \QRFRAME
 	
 
@@ -354,7 +355,7 @@
 	
 \end{frame}
 
-\section{Docker}
+\section[Docker]{Docker. Работа с контейнерами}
 
 \begin{frame}
 	\tableofcontents
@@ -768,7 +769,7 @@
 		\item<.-> \texttt{dockerd} --- управляет контейнерами, сетями, томами и образами, взаимодействуя с \texttt{containerd} по протоколу \texttt{gRPC}.
 		\item<+-> \texttt{containerd} --- высокоуровневый рантайм; принимает задачи от \texttt{dockerd} и запускает \texttt{containerd-shim}.
 		\item<.-> \texttt{containerd-shim} --- процесс-посредник для одного контейнера; переживает перезапуск \texttt{containerd}.
-		\item<.-> \texttt{runc} --- низкоуровневый рантайм; через \texttt{fork / exec} создаёт Namespaces, Cgroups и запускает процесс контейнера, после чего завершается, оставляя \texttt{shim} родителем.
+		\item<+-> \texttt{runc} --- низкоуровневый рантайм; через \texttt{fork / exec} создаёт Namespaces, Cgroups и запускает процесс контейнера, после чего завершается, оставляя \texttt{shim} родителем.
 	\end{itemize}
 	
 	
@@ -776,8 +777,258 @@
 \end{frame}
 
 
+\section[Dockerfile]{Docker. Создание собственных образов}
+
+\begin{frame}
+	\tableofcontents
+	\sectionpage
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile=singleslide]\frametitle{Dockerfile}
+	
+
+	\begin{alertblock}{docker build ---}
+		это команда, которая читает инструкции из Dockerfile и создаёт (собирает) Docker-образ. В процессе сборки выполняются команды из Dockerfile (RUN, COPY, ADD и т.д.), а результат сохраняется как образ, готовый к запуску контейнеров.
+	\end{alertblock}
+	
+	\begin{alertblock}{Dockerfile ---}
+		это текстовый файл (без расширения), содержащий последовательность инструкций для автоматической сборки Docker-образа. 
+	\end{alertblock}
+	
+	\begin{block}{dockerfile}
+		\begin{dockerfile}
+			FROM ubuntu:22.04
+			COPY ./app /app
+			RUN make /app
+			CMD python /app/main.py
+		\end{dockerfile}
+	\end{block}
+	
+\end{frame}
+
+
+\begin{frame}\frametitle{Основные инструкции dockerfile}
+	
+	
+	
+	\begin{tabularx}{\linewidth}{>{\ttfamily\bfseries}lp{6cm}X}
+		\textbf{\rmfamily Ин-ция} & \textbf{Описание} & \textbf{Пример} \\ \hline
+		FROM & Задает базовый образ & FROM ubuntu:22.04 \\
+		RUN & Выполняет команду во время сборки & RUN apt update \&\& apt install -y python3 \\
+		COPY & Копирует файлы с хоста в образ & COPY . /app \\
+		WORKDIR & Устанавливает рабочую директорию & WORKDIR /app \\
+		CMD & Команда по умолчанию при запуске контейнера (может быть переопределена) & CMD {[}"python", "app.py"{]} \\
+		ENTRYPOINT & Основная команда контейнера (не может быть переопределена полностью) & ENTRYPOINT {[}"python"{]} \\
+		ENV & Устанавливает переменную окружения (сохраняется в образе) & ENV NODE\_ENV=production \\
+		EXPOSE & Документирует, какой порт использует приложение & EXPOSE 8080 \\
+		VOLUME & Создает точку монтирования для тома & VOLUME /data \\
+	\end{tabularx}
+	
+\end{frame}
+
+\begin{frame}\frametitle{Дополнительные инструкции dockerfile}
+	
+	
+	
+	\begin{tabularx}{\linewidth}{>{\ttfamily\bfseries}lp{6cm}X}
+		\textbf{\rmfamily  Ин-ция} & \textbf{Описание} & \textbf{Пример} \\ \hline
+		ADD & Копирует файлы, распаковывает tar или скачивает по URL & ADD https://example.com/file.tar.gz / \\
+		ARG & Переменная только для сборки (не сохраняется в образе) & ARG VERSION=1.0 \\
+		USER & Задает пользователя для выполнения команд & USER appuser \\
+		LABEL & Добавляет метаданные в формате ключ=значение & LABEL version="1.0" \\
+		HEALTHCHECK & Определяет команду для проверки состояния контейнера & HEALTHCHECK CMD curl -f http://localhost/ \\
+		SHELL & Меняет командную оболочку по умолчанию & SHELL {[}"/bin/bash", "-c"{]} \\
+		STOPSIGNAL & Задает системный сигнал для остановки контейнера & STOPSIGNAL SIGTERM \\
+		ONBUILD & Инструкция, которая выполняется при использовании образа как базового & ONBUILD RUN pip install -r requirements.txt \\
+	\end{tabularx}
+	
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]\frametitle{Упакуем программу в образ}
+	
+	\begin{block}{prog\_sleep.cpp}
+		\begin{cppcode}
+			#include <unistd.h>
+			#include <iostream>
+			
+			int main()
+			{
+				while (1)
+				{
+					std::cout << "Hello" << std::endl;
+					sleep(1);
+				}	
+				return 0;	
+			}
+			\end{cppcode}
+	\end{block}
+	
+	\begin{block}{dockerfile}
+		\begin{dockerfile}
+			FROM debian:latest
+			COPY prog_sleep /usr/local/bin/prog_sleep
+			RUN chmod +x /usr/local/bin/prog_sleep
+			ENTRYPOINT ["/usr/local/bin/prog_sleep"]
+		\end{dockerfile}
+	\end{block}
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Соберём образ}
+	
+	\begin{cmdcode}[escapeinside=\@\@,fontsize=\footnotesize]
+		
+		:~$ @\color{orange}sudo docker run --rm -v .:/tmp -w /tmp gcc:16.1 g++ prog\_sleep.cpp -o prog\_sleep@ 
+		:~$ @\color{orange}sudo docker build -t sleep\_app . @
+		[+] Building 10.8s (8/8) FINISHED                                                               docker:default
+		...
+		=> [1/3] FROM docker.io/library/debian:latest sha256:4ae67669760b807c19f23902a3fd7c121a6a70cf2ae7090356  5.9s
+		...
+		=> [2/3] COPY prog_sleep /usr/local/bin/prog_sleep                                                       0.4s
+		=> [3/3] RUN chmod +x /usr/local/bin/prog_sleep                                                          0.5s
+		=> exporting to image                                                                                    0.5s
+		...
+		=> => unpacking to docker.io/library/sleep_app:latest                                                    0.1s
+		
+		:~$ @\color{orange}sudo docker image ls@ 
+		i Info →   U  In Use
+		IMAGE                      ID             DISK USAGE   CONTENT SIZE   EXTRA
+		...
+		sleep_app:latest           f5cd4b334690        183MB         49.3MB
+			
+		:~$ @\color{orange}sudo docker run --rm sleep\_app@ 
+		Hello
+		Hello
+		Hello
+		Hello
+		Hello
+	\end{cmdcode}
+	
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]\frametitle{Слои }
+	
+	\begin{alertblock}{Слой (layer) --- }
+		это результат выполнения одной инструкции в Dockerfile, которая изменяет файловую систему. Каждый слой содержит только изменения (разницу) относительно предыдущего слоя.
+	\end{alertblock}
+	
+	\hfill\begin{tikzpicture}[box/.style={draw, 
+			rounded corners=3pt, 
+			align=center,
+			minimum width = 60ex},
+		colbox/.style={draw=#1,fill=#1!30!white},
+		node distance=1em,
+		]
+		
+		\node[box,colbox=red] (l0) {Слой 0\\\Verb|FROM debian:latest|};
+		\node[box,colbox=ForestGreen, above=of l0] (l1) {Слой 1\\\Verb|COPY prog_sleep /usr/local/bin/prog_sleep|};
+		\node[box,colbox=blue, above=of l1] (l2) {Слой 2\\\Verb|RUN chmod +x /usr/local/bin/prog_sleep|};
+		
+		\draw [-Latex] (l0) -- (l1);
+		\draw [-Latex] (l1) -- (l2);
+		
+	\end{tikzpicture}\hfill{}
+	
+	\begin{cmdcode}[fontsize=\footnotesize]
+		:~$ @\color{orange}sudo docker image history sleep\_app@
+		IMAGE          CREATED          CREATED BY                                      SIZE      COMMENT
+		f5cd4b334690   44 minutes ago   ENTRYPOINT ["/usr/local/bin/prog_sleep"]        0B        buildkit.dockerfile.v0
+		<missing>      44 minutes ago   RUN /bin/sh -c chmod +x /usr/local/bin/prog_…   4.1kB     buildkit.dockerfile.v0
+		<missing>      44 minutes ago   COPY prog_sleep /usr/local/bin/prog_sleep # …   32.8kB    buildkit.dockerfile.v0
+		<missing>      6 days ago       # debian.sh --arch 'amd64' out/ 'trixie' '1…   134MB     debuerreotype 0.17
+	\end{cmdcode}
+	
+	
+	
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Многоэтапная сборка}
+	
+	\begin{alertblock}{Multistage сборка (многоэтапная сборка) ---}
+		 это техника в Docker, использующая несколько инструкций FROM в одном Dockerfile для разделения процесса сборки и финального образа. Первые этапы (builder) содержат инструменты сборки (компиляторы, зависимости), последний этап (final) копирует только готовые артефакты.
+	\end{alertblock}
+	
+	
+	
+	\hfill{}\begin{tikzpicture}[box/.style={draw, 
+			rounded corners=3pt, 
+			align=center},
+		colbox/.style={draw=#1,fill=#1!30!white},
+		node distance=3em,
+		]
+		
+		
+;
+%		
+%		\node[draw, left=1cm of src1] (src2) {\Verb|prog_sleep.cpp|}; 
+%		
+%		\node[draw, right = 1cm of app1] (app2) {\Verb|sleep_prog|};
+		
+		
+		
+		\node [box,colbox=red, minimum width=4cm, minimum height=5cm] (c1) {};
+		
+		\node [box,colbox=blue, minimum width=4cm, minimum height=5cm, right=3cm of c1] (c2) {};
+		
+		
+		\draw (c1) ++(0,1) node[draw] (src1) {\Verb|prog_sleep.cpp|}; 
+				
+		\node[draw, below = of src1] (app1) {\Verb|sleep_prog|};
+				
+		\draw [-Latex] (src1) -- (app1) node [right, midway] {g++};
+		
+		\draw (c1.north) node[below] (f) {\textbf{builder}} (f.south) node [below] {\Verb|FROM gcc:16.1|};
+		\draw (c2.north) node[below] (f) {\textbf{final}} (f.south) node [below] {\Verb|FROM debian:latest|};
+		
+		\draw[draw=none] (app1) -| (c2) node[draw, pos=0.5] (app2) {\Verb|sleep_prog|};
+		\draw [-Latex] (app1) -- (app2) node [midway, above, sloped] {\Verb|COPY --from=builder|};
+		
+	\end{tikzpicture}\hfill{}
+	
+	
+\end{frame}
+
+\begin{frame}[fragile=singleslide]\frametitle{Обновим dockerfile для multistage}
+	
+	\begin{block}{dockerfile}
+		\begin{dockerfile}
+			FROM gcc:16.1 AS builder
+			WORKDIR /tmp
+			COPY prog_sleep.cpp .
+			RUN g++ prog_sleep.cpp -o prog_sleep
+			
+			FROM debian:latest
+			COPY --from=builder /tmp/prog_sleep /usr/local/bin/prog_sleep
+			RUN chmod +x /usr/local/bin/prog_sleep
+			ENTRYPOINT ["/usr/local/bin/prog_sleep"]
+		\end{dockerfile}
+	\end{block}
+	
+
+	
+	\begin{cmdcode}
+		:~$ @\color{orange}sudo docker build -t sleep\_app .@
+		[+] Building 2.2s (13/13) FINISHED                                                                                                    ...
+	
+		:~$ @\color{orange}sudo docker run sleep\_app@
+		Hello
+		Hello
+		Hello
+		Hello
+		Hello
+	\end{cmdcode}
+\end{frame}
 
 \section*{Приложения}
+
+
 
 
 \begin{frame}
