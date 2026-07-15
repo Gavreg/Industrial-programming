@@ -49,13 +49,13 @@ jobs:
               -interaction=nonstopmode \
               -8bit \
               -halt-on-error \
-              --shell-escape main.tex \
+              --shell-escape \
           "
     - name: Upload PDF Artifact
       uses: actions/upload-artifact@v4
       with:
         name: pdf-build
-        path: '**/*.pdf'
+        path: './*.pdf'
     - name: Push PDF artifacts to orphan branch
       env:
         GIT_AUTHOR_NAME: github-actions[bot]
