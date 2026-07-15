@@ -74,10 +74,6 @@ jobs:
         cd /tmp/pdf-output
         git config user.name "${GIT_AUTHOR_NAME}"
         git config user.email "${GIT_AUTHOR_EMAIL}"
-        if [ ! -f "${{ github.workspace }}/main.pdf" ]; then
-          echo "Compiled PDF not found at ${{ github.workspace }}/main.pdf" >&2
-          exit 1
-        fi
         cp -f "${{ github.workspace }}/*.pdf" .
         git add *.pdf
         git commit -m "Update PDF from ${{ github.sha }}"
