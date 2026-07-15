@@ -78,7 +78,7 @@ jobs:
           echo "Compiled PDF not found at ${{ github.workspace }}/main.pdf" >&2
           exit 1
         fi
-        cp "${{ github.workspace }}/main.pdf" ./main.pdf
+        cp -f "${{ github.workspace }}/*.pdf" .
         git add *.pdf
         git commit -m "Update PDF from ${{ github.sha }}"
         git push origin HEAD:pdfs
