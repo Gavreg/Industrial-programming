@@ -1,0 +1,84 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+permissions:
+  contents: write
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: true
+    - name: Variables
+      run: echo 
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y ttf-mscorefonts-installer fonts-liberation tree      
+    - name: Update font cache
+      run: sudo fc-cache -f -v /usr/share/fonts/    
+    - name: cheking fonts
+      run: tree /usr/share/fonts/
+    - name: Cheking docker 
+      run: docker -v      
+    - name: pulling TexLive image
+      run: sudo docker pull texlive/texlive:TL2025-historic       
+    - name: Compiling pdf 
+      run: |
+        sudo docker \
+          run \
+          --rm \
+          -v .:/data \
+          -v /usr/share/fonts/:/usr/share/fonts \
+          -w /data texlive/texlive:TL2025-historic \
+          sh -c " \
+            fc-cache -f -v /usr/share/fonts/ && \
+            apt update && \
+            apt install -y python3.14 && \
+            latexmk \
+              -pdfxe \
+              -synctex=1 \
+              -interaction=nonstopmode \
+              -8bit \
+              -halt-on-error \
+              --shell-escape main.tex \
+          "
+    - name: Upload PDF Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pdf-build
+        path: '**/*.pdf'
+    - name: Push PDF artifacts to orphan branch
+      env:
+        GIT_AUTHOR_NAME: github-actions[bot]
+        GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+        GIT_COMMITTER_NAME: github-actions[bot]
+        GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+      run: |
+        if git ls-remote --exit-code --heads "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" pdfs >/dev/null 2>&1; then
+          git clone --branch pdfs --single-branch "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" /tmp/pdf-output
+        else
+          git init /tmp/pdf-output
+          cd /tmp/pdf-output
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git checkout --orphan pdfs
+        fi
+        cd /tmp/pdf-output
+        git config user.name "${GIT_AUTHOR_NAME}"
+        git config user.email "${GIT_AUTHOR_EMAIL}"
+        if [ ! -f "${{ github.workspace }}/main.pdf" ]; then
+          echo "Compiled PDF not found at ${{ github.workspace }}/main.pdf" >&2
+          exit 1
+        fi
+        cp "${{ github.workspace }}/main.pdf" ./main.pdf
+        git add *.pdf
+        git commit -m "Update PDF from ${{ github.sha }}"
+        git push origin HEAD:pdfs

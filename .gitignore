@@ -16,4 +16,5 @@
 !*.svg
 !include/
 !.gitignore
-!.github
+!.github/
+!.github/**
