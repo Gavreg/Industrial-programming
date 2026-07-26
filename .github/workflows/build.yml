@@ -1,5 +1,4 @@
 name: Build
-
 on:
   push:
     branches:
@@ -12,50 +11,91 @@ permissions:
 jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
-
     steps:
+
+
+    - name: Installing workflow dependencies
+      run:  sudo apt update && sudo apt install -y parallel tree
+
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
         persist-credentials: true
-    - name: Variables
-      run: echo 
-    - name: Install dependencies
-      run: sudo apt update && sudo apt install -y ttf-mscorefonts-installer fonts-liberation tree      
-    - name: Update font cache
-      run: sudo fc-cache -f -v /usr/share/fonts/    
-    - name: cheking fonts
-      run: tree /usr/share/fonts/
-    - name: Cheking docker 
-      run: docker -v      
-    - name: pulling TexLive image
-      run: sudo docker pull texlive/texlive:TL2025-historic       
-    - name: Compiling pdf 
+
+    - name: Caclulate tex files hash
       run: |
-        sudo docker \
-          run \
-          --rm \
-          -v .:/data \
-          -v /usr/share/fonts/:/usr/share/fonts \
-          -w /data texlive/texlive:TL2025-historic \
-          sh -c " \
-            fc-cache -f -v /usr/share/fonts/ && \
-            apt update && \
-            apt install -y python3.14 && \
-            latexmk \
-              -pdfxe \
-              -synctex=1 \
-              -interaction=nonstopmode \
-              -8bit \
-              -halt-on-error \
-              --shell-escape \
-          "
-    - name: Upload PDF Artifact
-      uses: actions/upload-artifact@v4
+        hash=$(echo ${{ hashFiles('**/*.tex', '**/*.cpp', '**/*.h') }})
+        echo "TEX_HASH=$hash" >> $GITHUB_ENV 
+
+    
+    - name: Restore *.texfiles hash from cache
+      uses: actions/cache@v6
       with:
-        name: pdf-build
-        path: '.'
+        path: texfiles.hash
+        key: ${{ runner.os }}-latex-hash-${{ env.TEX_HASH }}
+
+
+
+    - name: Check if compilation is required 
+      run: |
+        echo "Old hash $(cat texfiles.hash)"
+        echo "Curent hash ${{ env.TEX_HASH }}"
+        if test -f texfiles.hash && test "${{ env.TEX_HASH }}" == "$(cat texfiles.hash)"; then
+          echo "Не собираем!"
+        else
+          echo "Собираем!"
+          echo "BUILD_REQUIRED=true" >> $GITHUB_ENV   
+        fi
+
+
+
+    - name: Building TexLive image from dockerfile
+      if: ${{ env.BUILD_REQUIRED == 'true' }}   
+      run: sudo docker build -t teximage .
+
+
+
+    - name: Restore LaTeX temp archive from cache
+      if: ${{ env.BUILD_REQUIRED == 'true' }}   
+      id: latex-cache
+      uses: actions/cache/restore@v5
+      with:
+        path: cache.tar.gz
+        key: ${{ runner.os }}-latex-temp-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-latex-temp-
+
+
+
+    - name: Unpack LaTeX temp archive
+      if: ${{ env.BUILD_REQUIRED == 'true' }}  
+      run: test -f cache.tar.gz && tar -xzvf cache.tar.gz  || echo "No cache archive"
+
+
+    - name: Compiling pdf 
+      if: ${{ env.BUILD_REQUIRED == 'true' }}   
+      run: |
+        sudo bash build.sh 
+        echo "${{ env.TEX_HASH }}" > texfiles.hash
+
+
+    - name: Collect logs on failure
+      if: ${{ failure() }}   
+      run: |
+        mkdir -p /tmp/error_logs
+        find . -type f -name "*.log" -exec cp --parents {} /tmp/error_logs/ \;      
+        echo "Logs saved to: /tmp/error_logs/"
+
+
+    - name: Upload error logs as artifacts
+      if: ${{ failure() && env.BUILD_REQUIRED == 'true' }}  
+      uses: actions/upload-artifact@v7
+      with:
+        name: error-logs-${{ github.run_id }}
+        path: /tmp/error_logs/
+        retention-days: 7  
+        
     - name: Push PDF artifacts to orphan branch
       env:
         GIT_AUTHOR_NAME: github-actions[bot]
@@ -74,7 +114,27 @@ jobs:
         cd /tmp/pdf-output
         git config user.name "${GIT_AUTHOR_NAME}"
         git config user.email "${GIT_AUTHOR_EMAIL}"
-        find "${{ github.workspace }}" -maxdepth 1 -type f -name '*.pdf' -exec cp -f {} . \;
+        find "${{ github.workspace }}" -maxdepth 1 -type f -name '*.pdf'  -exec cp -f {} . \;
+        cp -f "${{ github.workspace }}"/README_pdf.md .
+        mv README_pdf.md README.md
         git add *.pdf
-        git commit -m "Update PDF from ${{ github.sha }}"
-        git push origin HEAD:pdfs
+        git add README.md
+        git commit -m "Update PDF from ${{ github.sha }}" || true
+        git push origin HEAD:pdfs || true
+    
+    
+    - name: Preparing for cache latex tmp files
+      if: ${{ always() && env.BUILD_REQUIRED == 'true' }}   
+      run: |
+        find . -type f \( -name  "*.aux" -o -name "*.fdb_latexmk" -o -name "*.xdv" -o -name "*.nav" -o -name "*.out" -o -name "*.toc" -o -name "*.pdf" \) ! -name '*.image.pdf' -print0 | tar -czvf cache.tar.gz --null -T -
+
+    - name: Save LaTeX temp archive to cache
+      if: ${{ always() && env.BUILD_REQUIRED == 'true' }}   
+      uses: actions/cache/save@v5
+      with: 
+        path: cache.tar.gz
+        key: ${{ runner.os }}-latex-temp-${{ github.run_id }}
+
+    - name: Print rezult tree
+      if: ${{ always() }}   
+      run: tree

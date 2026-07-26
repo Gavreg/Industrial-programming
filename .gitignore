@@ -18,3 +18,4 @@
 !.gitignore
 !.github/
 !.github/**
+!*.sh
